@@ -31,6 +31,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     
     {% block styles %}{% endblock %}
+    {% block head %}{% endblock %}
 </head>
 <body>
     <!-- Admin Header -->
@@ -112,6 +113,11 @@
                             <li class="nav-item">
                                 <a class="nav-link {% if 'users' in request.path %}active{% endif %}" href="{{ url_for('admin.user_manager') }}">
                                     <i data-feather="user"></i> User Manager
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if 'file-manager' in request.path or 'file-edit' in request.path %}active{% endif %}" href="{{ url_for('admin.file_manager') }}">
+                                    <i data-feather="file-text"></i> File Manager
                                 </a>
                             </li>
                         {% endif %}

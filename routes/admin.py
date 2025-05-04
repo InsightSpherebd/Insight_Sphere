@@ -727,3 +727,86 @@ def user_delete(user_id):
     db.session.commit()
     flash('User deleted successfully!', 'success')
     return redirect(url_for('admin.user_manager'))
+
+
+# File Manager - For Super Admins to edit program files
+@admin_bp.route('/file-manager')
+@super_admin_required
+def file_manager():
+    path = request.args.get('path', '.')
+    # Security check to prevent directory traversal attacks
+    if '..' in path or path.startswith('/'):
+        flash('Invalid path specified.', 'danger')
+        path = '.'
+        
+    files = []
+    directories = []
+    
+    # Get list of files and directories
+    try:
+        for item in os.listdir(path):
+            item_path = os.path.join(path, item)
+            if os.path.isdir(item_path):
+                directories.append({
+                    'name': item,
+                    'path': item_path,
+                    'type': 'directory'
+                })
+            else:
+                files.append({
+                    'name': item,
+                    'path': item_path,
+                    'size': os.path.getsize(item_path),
+                    'type': 'file'
+                })
+    except Exception as e:
+        flash(f'Error accessing path: {str(e)}', 'danger')
+        path = '.'
+        directories = []
+        files = []
+    
+    # Sort alphabetically
+    directories.sort(key=lambda x: x['name'])
+    files.sort(key=lambda x: x['name'])
+    
+    return render_template('admin/file_manager.html',
+                        title='File Manager',
+                        current_path=path,
+                        directories=directories,
+                        files=files)
+
+@admin_bp.route('/file-edit', methods=['GET', 'POST'])
+@super_admin_required
+def file_edit():
+    path = request.args.get('path', '')
+    
+    # Security check to prevent directory traversal attacks
+    if '..' in path or path.startswith('/'):
+        flash('Invalid path specified.', 'danger')
+        return redirect(url_for('admin.file_manager'))
+    
+    if request.method == 'POST':
+        content = request.form.get('content', '')
+        
+        try:
+            with open(path, 'w') as f:
+                f.write(content)
+            flash('File saved successfully!', 'success')
+        except Exception as e:
+            flash(f'Error saving file: {str(e)}', 'danger')
+        
+        # Redirect back to the same page to clear POST data
+        return redirect(url_for('admin.file_edit', path=path))
+    
+    # Get file content for GET request
+    try:
+        with open(path, 'r') as f:
+            content = f.read()
+    except Exception as e:
+        flash(f'Error reading file: {str(e)}', 'danger')
+        return redirect(url_for('admin.file_manager'))
+    
+    return render_template('admin/file_edit.html',
+                         title=f'Edit File: {os.path.basename(path)}',
+                         path=path,
+                         content=content)

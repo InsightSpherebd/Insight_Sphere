@@ -1,0 +1,98 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-content">
+        <h1>File Manager</h1>
+        <p class="mb-4">Current path: <code>{{ current_path }}</code></p>
+        
+        <!-- Breadcrumb navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.file_manager', path='.') }}">Root</a></li>
+                {% if current_path != '.' %}
+                    {% set path_parts = current_path.split('/') %}
+                    {% set accumulated_path = '' %}
+                    {% for part in path_parts %}
+                        {% if part != '.' %}
+                            {% set accumulated_path = accumulated_path + ('/' if accumulated_path else '') + part %}
+                            <li class="breadcrumb-item"><a href="{{ url_for('admin.file_manager', path=accumulated_path) }}">{{ part }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </ol>
+        </nav>
+        
+        <!-- Directory and file listing -->
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Parent directory -->
+                    {% if current_path != '.' %}
+                        {% set parent_path = '/'.join(current_path.split('/')[:-1]) %}
+                        {% if parent_path == '' %}
+                            {% set parent_path = '.' %}
+                        {% endif %}
+                        <tr>
+                            <td><a href="{{ url_for('admin.file_manager', path=parent_path) }}"><i data-feather="arrow-up"></i> ..</a></td>
+                            <td>Directory</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    {% endif %}
+                    
+                    <!-- Directories -->
+                    {% for directory in directories %}
+                        <tr>
+                            <td><a href="{{ url_for('admin.file_manager', path=directory.path) }}"><i data-feather="folder"></i> {{ directory.name }}</a></td>
+                            <td>Directory</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    {% endfor %}
+                    
+                    <!-- Files -->
+                    {% for file in files %}
+                        <tr>
+                            <td><i data-feather="file"></i> {{ file.name }}</td>
+                            <td>File</td>
+                            <td>{{ (file.size / 1024)|round(1) }} KB</td>
+                            <td>
+                                {% if file.name.endswith('.py') or file.name.endswith('.html') or file.name.endswith('.css') or file.name.endswith('.js') or file.name.endswith('.json') or file.name.endswith('.md') or file.name.endswith('.txt') %}
+                                    <a href="{{ url_for('admin.file_edit', path=file.path) }}" class="btn btn-sm btn-primary">Edit</a>
+                                {% else %}
+                                    <span class="text-muted">Binary file</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    
+                    <!-- Empty state -->
+                    {% if directories|length == 0 and files|length == 0 %}
+                        <tr>
+                            <td colspan="4" class="text-center">This directory is empty.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Feather icons
+        feather.replace();
+    });
+</script>
+{% endblock %}

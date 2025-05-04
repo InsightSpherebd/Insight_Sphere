@@ -1,0 +1,74 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-content">
+        <h1>Edit File: {{ path }}</h1>
+        <p class="mb-4">
+            <a href="{{ url_for('admin.file_manager', path=path.rsplit('/', 1)[0] or '.') }}" class="btn btn-secondary">
+                <i data-feather="arrow-left"></i> Back to File Manager
+            </a>
+        </p>
+        
+        <form method="post">
+            <div class="form-group">
+                <textarea id="code-editor" name="content" class="form-control" rows="25">{{ content }}</textarea>
+            </div>
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{{ url_for('admin.file_manager', path=path.rsplit('/', 1)[0] or '.') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<!-- Load CodeMirror for syntax highlighting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+<style>
+    .CodeMirror {
+        height: auto;
+        min-height: 500px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<!-- CodeMirror and necessary modes -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Feather icons
+        feather.replace();
+        
+        // Initialize CodeMirror editor
+        var editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+            lineNumbers: true,
+            indentUnit: 4,
+            matchBrackets: true,
+            theme: 'monokai',
+            mode: getMode('{{ path }}')
+        });
+        
+        // Function to determine the mode based on file extension
+        function getMode(path) {
+            if (path.endsWith('.py')) return 'text/x-python';
+            if (path.endsWith('.js')) return 'text/javascript';
+            if (path.endsWith('.html')) return 'text/html';
+            if (path.endsWith('.css')) return 'text/css';
+            if (path.endsWith('.json')) return { name: 'javascript', json: true };
+            return 'text/plain';
+        }
+    });
+</script>
+{% endblock %}
