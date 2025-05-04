@@ -1,0 +1,204 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div x-data="userDashboard">
+    <!-- Page Header -->
+    <section class="hero">
+        <div class="container">
+            <h2>My Dashboard</h2>
+            <p>Welcome back, {{ current_user.full_name or current_user.username }}!</p>
+        </div>
+    </section>
+
+    <!-- Dashboard Content -->
+    <section class="section">
+        <div class="container">
+            <div class="dashboard-grid">
+                <!-- Sidebar -->
+                <div class="dashboard-sidebar">
+                    <ul>
+                        <li>
+                            <a href="#" @click.prevent="setActiveTab('courses')" :class="{'active': isActiveTab('courses')}">
+                                <i data-feather="book-open"></i> My Courses
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" @click.prevent="setActiveTab('certificates')" :class="{'active': isActiveTab('certificates')}">
+                                <i data-feather="award"></i> My Certificates
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" @click.prevent="setActiveTab('profile')" :class="{'active': isActiveTab('profile')}">
+                                <i data-feather="user"></i> My Profile
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="dashboard-content">
+                    <!-- Courses Tab -->
+                    <div x-show="isActiveTab('courses')">
+                        <h3 class="mb-4">My Enrolled Courses</h3>
+                        
+                        {% if courses %}
+                            <div class="row">
+                                {% for item in courses %}
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-content">
+                                                <h4>{{ item.course.title }}</h4>
+                                                
+                                                <div class="course-meta my-3">
+                                                    <div>
+                                                        <i data-feather="calendar"></i>
+                                                        {% if item.course.date %}
+                                                            {{ item.course.date.strftime('%d %b, %Y') }}
+                                                        {% else %}
+                                                            Flexible Schedule
+                                                        {% endif %}
+                                                    </div>
+                                                    <div>
+                                                        <i data-feather="clock"></i>
+                                                        {{ item.course.duration }}
+                                                    </div>
+                                                    <div>
+                                                        <i data-feather="tag"></i>
+                                                        Registration: {{ item.registration_date.strftime('%d %b, %Y') }}
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Status Badges -->
+                                                <div class="course-status mb-3">
+                                                    <!-- Payment Status -->
+                                                    <span class="badge {{ 'bg-success' if item.payment_status == 'completed' else 'bg-warning' }}">
+                                                        {{ 'Payment Completed' if item.payment_status == 'completed' else 'Payment Pending' }}
+                                                    </span>
+                                                    
+                                                    <!-- Completion Status -->
+                                                    <span class="badge {{ 'bg-success' if item.completion_status else 'bg-secondary' }}">
+                                                        {{ 'Completed' if item.completion_status else 'In Progress' }}
+                                                    </span>
+                                                </div>
+                                                
+                                                <div class="d-grid">
+                                                    {% if item.payment_status == 'completed' or item.course.fee == 0 %}
+                                                        <a href="{{ url_for('user.course_access', course_id=item.course.id) }}" class="btn btn-primary">
+                                                            Access Course
+                                                        </a>
+                                                    {% else %}
+                                                        <a href="{{ url_for('public.course_payment', course_id=item.course.id) }}" class="btn btn-warning">
+                                                            Complete Payment
+                                                        </a>
+                                                    {% endif %}
+                                                    
+                                                    {% if item.certificate_issued %}
+                                                        {% for cert in certificates %}
+                                                            {% if cert.course_id == item.course.id %}
+                                                                <a href="{{ cert.pdf_url }}" target="_blank" class="btn btn-outline-success mt-2">
+                                                                    <i data-feather="award"></i> View Certificate
+                                                                </a>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <p>You are not enrolled in any courses yet.</p>
+                                <a href="{{ url_for('public.courses') }}" class="btn btn-primary mt-3">Browse Courses</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Certificates Tab -->
+                    <div x-show="isActiveTab('certificates')">
+                        <h3 class="mb-4">My Certificates</h3>
+                        
+                        {% if certificates %}
+                            <div class="row">
+                                {% for certificate in certificates %}
+                                    <div class="col-md-6 mb-4">
+                                        <div class="certificate-card">
+                                            <div>
+                                                <i data-feather="award" style="width: 48px; height: 48px; color: #0066cc;"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h4>{{ certificate.course.title }}</h4>
+                                                <p class="text-muted">Issued on {{ certificate.issue_date.strftime('%d %B, %Y') }}</p>
+                                                <p class="text-muted">Certificate ID: {{ certificate.certificate_number }}</p>
+                                            </div>
+                                            <div>
+                                                <a href="{{ certificate.pdf_url }}" target="_blank" class="btn btn-primary">
+                                                    <i data-feather="download"></i> Download
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <p>You have not received any certificates yet.</p>
+                                <p>Certificates are issued upon successful completion of courses.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Profile Tab -->
+                    <div x-show="isActiveTab('profile')">
+                        <h3 class="mb-4">My Profile</h3>
+                        
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" value="{{ current_user.full_name }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Username</label>
+                                            <input type="text" class="form-control" value="{{ current_user.username }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" value="{{ current_user.email }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Phone</label>
+                                            <input type="text" class="form-control" value="{{ current_user.phone }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Account Created</label>
+                                    <input type="text" class="form-control" value="{{ current_user.created_at.strftime('%d %B, %Y') }}" readonly>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <p class="text-muted">To update your profile information, please contact support.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

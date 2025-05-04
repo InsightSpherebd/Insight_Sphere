@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #0066cc;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666666;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .receipt-box {
+            border: 1px solid #dddddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 18px;
+            text-align: right;
+            margin-top: 20px;
+        }
+        .success-icon {
+            text-align: center;
+            font-size: 48px;
+            color: #28a745;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Payment Receipt</h1>
+        </div>
+        
+        <div class="content">
+            <div class="success-icon">✓</div>
+            
+            <p>Dear {{ user.full_name }},</p>
+            
+            <p>Thank you for your payment. This email serves as a receipt for your course registration.</p>
+            
+            <div class="receipt-box">
+                <h2>Payment Details</h2>
+                <table>
+                    <tr>
+                        <th>Receipt Number</th>
+                        <td>{{ payment.transaction_id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date</th>
+                        <td>{{ payment.payment_date.strftime('%d %B, %Y') if payment.payment_date else now.strftime('%d %B, %Y') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Payment Method</th>
+                        <td>{{ payment.payment_method|capitalize }}</td>
+                    </tr>
+                </table>
+                
+                <h3>Course Information</h3>
+                <table>
+                    <tr>
+                        <th>Course</th>
+                        <td>{{ course.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Course Date</th>
+                        <td>
+                            {% if course.date %}
+                                {{ course.date.strftime('%d %B, %Y') }}
+                            {% else %}
+                                Flexible Schedule
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+                
+                <div class="total">
+                    Total Amount: {{ payment.amount }} {{ payment.currency|upper }}
+                </div>
+            </div>
+            
+            <p>You can now access the course materials by logging into your account and visiting your dashboard.</p>
+            
+            <div style="text-align: center;">
+                <a href="{{ config.BASE_URL }}/user/course_access/{{ course.id }}" class="button">Access Course</a>
+            </div>
+            
+            <p>If you have any questions or need assistance, please don't hesitate to contact us.</p>
+            
+            <p>Best regards,<br>
+            The Insight Sphere BD Team</p>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; {{ now.year }} Insight Sphere BD. All Rights Reserved.</p>
+            <p>This is an automated receipt. Please keep it for your records.</p>
+        </div>
+    </div>
+</body>
+</html>

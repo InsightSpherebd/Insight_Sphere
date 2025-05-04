@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #0066cc;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666666;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Registration Confirmation</h1>
+        </div>
+        
+        <div class="content">
+            <p>Dear {{ user.full_name }},</p>
+            
+            <p>Thank you for registering for the course <strong>{{ course.title }}</strong>. Your registration has been successfully processed.</p>
+            
+            <h2>Course Details</h2>
+            <table>
+                <tr>
+                    <th>Course</th>
+                    <td>{{ course.title }}</td>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <td>
+                        {% if course.date %}
+                            {{ course.date.strftime('%d %B, %Y') }}
+                        {% else %}
+                            Flexible Schedule
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Duration</th>
+                    <td>{{ course.duration }}</td>
+                </tr>
+                <tr>
+                    <th>Location</th>
+                    <td>
+                        {% if course.is_online %}
+                            Online
+                        {% else %}
+                            {{ course.location }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Fee</th>
+                    <td>
+                        {% if course.fee > 0 %}
+                            {{ course.fee }} BDT
+                        {% else %}
+                            Free
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+            
+            {% if course.fee > 0 %}
+                <p>To complete your registration, please proceed with the payment. You can do this by logging into your account and accessing the course from your dashboard.</p>
+                
+                <div style="text-align: center;">
+                    <a href="{{ config.BASE_URL }}/user/dashboard" class="button">Go to Dashboard</a>
+                </div>
+            {% else %}
+                <p>You can now access the course materials by logging into your account and visiting your dashboard.</p>
+                
+                <div style="text-align: center;">
+                    <a href="{{ config.BASE_URL }}/user/dashboard" class="button">Access Course</a>
+                </div>
+            {% endif %}
+            
+            <p>If you have any questions or need assistance, please don't hesitate to contact us.</p>
+            
+            <p>Best regards,<br>
+            The Insight Sphere BD Team</p>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; {{ now.year }} Insight Sphere BD. All Rights Reserved.</p>
+            <p>If you did not register for this course, please ignore this email or contact us.</p>
+        </div>
+    </div>
+</body>
+</html>

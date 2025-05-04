@@ -1,0 +1,127 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Course Management</h1>
+    <a href="{{ url_for('admin.course_add') }}" class="btn btn-primary">
+        <i data-feather="plus"></i> Add New Course
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-content">
+        {% if courses %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Fee</th>
+                            <th>Capacity</th>
+                            <th>Registrations</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in courses %}
+                            <tr>
+                                <td>{{ course.title }}</td>
+                                <td>
+                                    {% if course.date %}
+                                        {{ course.date.strftime('%d %b, %Y') }}
+                                    {% else %}
+                                        No date set
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if course.fee > 0 %}
+                                        {{ course.fee }} BDT
+                                    {% else %}
+                                        Free
+                                    {% endif %}
+                                </td>
+                                <td>{{ course.capacity if course.capacity else 'Unlimited' }}</td>
+                                <td>{{ course.participants.count() }}</td>
+                                <td>
+                                    <span class="badge {{ 'bg-success' if course.is_published else 'bg-secondary' }}">
+                                        {{ 'Published' if course.is_published else 'Draft' }}
+                                    </span>
+                                    <span class="badge {{ 'bg-success' if course.registration_open else 'bg-danger' }}">
+                                        {{ 'Open' if course.registration_open else 'Closed' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('admin.course_edit', course_id=course.id) }}" class="btn btn-sm btn-primary">
+                                            Edit
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ url_for('admin.course_videos', course_id=course.id) }}">
+                                                    <i data-feather="film"></i> Videos
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ url_for('admin.course_materials', course_id=course.id) }}">
+                                                    <i data-feather="file-text"></i> Materials
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ url_for('admin.course_participants', course_id=course.id) }}">
+                                                    <i data-feather="users"></i> Participants
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ course.id }}">
+                                                    <i data-feather="trash-2"></i> Delete
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="deleteModal{{ course.id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you want to delete the course "{{ course.title }}"?</p>
+                                                    {% if course.participants.count() > 0 %}
+                                                        <div class="alert alert-warning">
+                                                            <i data-feather="alert-triangle"></i> Warning: This course has {{ course.participants.count() }} registered participants.
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form action="{{ url_for('admin.course_delete', course_id=course.id) }}" method="post">
+                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p>No courses found. Click the "Add New Course" button to create one.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

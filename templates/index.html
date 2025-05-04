@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        {% if hero_content %}
+            {% for item in hero_content %}
+                <h2>{{ item.title }}</h2>
+                <p>{{ item.content }}</p>
+            {% endfor %}
+        {% else %}
+            <h2>Welcome to Insight Sphere BD</h2>
+            <p>Your premier destination for industrial engineering consultancy, training, and professional development.</p>
+        {% endif %}
+        <div class="hero-buttons">
+            <a href="{{ url_for('public.courses') }}" class="btn btn-primary">Browse Courses</a>
+            <a href="{{ url_for('public.about') }}" class="btn btn-secondary">About Us</a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Courses -->
+<section class="section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Featured Courses</h2>
+            <p>Expand your knowledge and skills with our specially curated courses</p>
+        </div>
+        
+        <div class="course-grid">
+            {% if featured_courses %}
+                {% for course in featured_courses %}
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="card-title">{{ course.title }}</h3>
+                            <div class="card-meta">
+                                <div>
+                                    <i data-feather="calendar"></i>
+                                    {% if course.date %}
+                                        {{ course.date.strftime('%d %b, %Y') }}
+                                    {% else %}
+                                        Flexible
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <i data-feather="clock"></i>
+                                    {{ course.duration }}
+                                </div>
+                                <div>
+                                    <i data-feather="tag"></i>
+                                    {% if course.fee > 0 %}
+                                        {{ course.fee }} BDT
+                                    {% else %}
+                                        Free
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <p class="card-text">{{ course.description|truncate(100) }}</p>
+                            <a href="{{ url_for('public.course_detail', course_id=course.id) }}" class="btn btn-primary">Learn More</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <p>No courses available at the moment. Please check back later.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('public.courses') }}" class="btn btn-primary">View All Courses</a>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="section-title">
+            <h2>Why Choose Insight Sphere BD</h2>
+            <p>We're dedicated to excellence in industrial engineering education</p>
+        </div>
+        
+        <div class="row features">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-feather="award"></i>
+                    </div>
+                    <h3>Expert Instructors</h3>
+                    <p>Learn from industry professionals with years of experience</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-feather="book-open"></i>
+                    </div>
+                    <h3>Comprehensive Curriculum</h3>
+                    <p>Courses designed to provide practical, industry-relevant skills</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-feather="file-text"></i>
+                    </div>
+                    <h3>Certification</h3>
+                    <p>Receive recognized certificates upon course completion</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-content">
+        <h1>{{ 'Edit' if content else 'Add' }} Content</h1>
+        
+        <form method="post" action="" novalidate>
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">
+                {{ form.section.label(class="form-label") }}
+                {{ form.section(class="form-control") }}
+                {% if form.section.errors %}
+                    {% for error in form.section.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.title.label(class="form-label") }}
+                {{ form.title(class="form-control") }}
+                {% if form.title.errors %}
+                    {% for error in form.title.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.content.label(class="form-label") }}
+                {{ form.content(class="form-control editor", rows=10) }}
+                {% if form.content.errors %}
+                    {% for error in form.content.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.media_url.label(class="form-label") }}
+                {{ form.media_url(class="form-control") }}
+                <small class="form-text text-muted">Enter a URL to an image or video.</small>
+                {% if form.media_url.errors %}
+                    {% for error in form.media_url.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.order.label(class="form-label") }}
+                {{ form.order(class="form-control") }}
+                <small class="form-text text-muted">Lower numbers appear first.</small>
+                {% if form.order.errors %}
+                    {% for error in form.order.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="form-check mb-3">
+                {{ form.is_published(class="form-check-input") }}
+                {{ form.is_published.label(class="form-check-label") }}
+            </div>
+            
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('admin.content_editor') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize TinyMCE editor
+        tinymce.init({
+            selector: 'textarea.editor',
+            height: 400,
+            menubar: false,
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        });
+    });
+</script>
+{% endblock %}

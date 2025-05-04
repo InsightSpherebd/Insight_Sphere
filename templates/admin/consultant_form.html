@@ -1,0 +1,165 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-content">
+        <h1>{{ 'Edit' if consultant else 'Add' }} Consultant</h1>
+        
+        <form method="post" action="" novalidate>
+            {{ form.hidden_tag() }}
+            
+            {% if not consultant %}
+                <div class="form-group">
+                    {{ form.user_id.label(class="form-label") }}
+                    {{ form.user_id(class="form-control") }}
+                    <small class="form-text text-muted">Select an existing user or create a new one</small>
+                    {% if form.user_id.errors %}
+                        {% for error in form.user_id.errors %}
+                        <span class="form-text text-danger">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.full_name.label(class="form-label") }}
+                        {{ form.full_name(class="form-control") }}
+                        {% if form.full_name.errors %}
+                            {% for error in form.full_name.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control") }}
+                        {% if form.email.errors %}
+                            {% for error in form.email.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            {% if not consultant %}
+                <div class="form-group">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control") }}
+                    <small class="form-text text-muted">Required for new users</small>
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                        <span class="form-text text-danger">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="form-group">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control") }}
+                    <small class="form-text text-muted">Leave blank to keep current password</small>
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                        <span class="form-text text-danger">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            <div class="form-group">
+                {{ form.position.label(class="form-label") }}
+                {{ form.position(class="form-control") }}
+                <small class="form-text text-muted">e.g., "Senior Industrial Engineer", "Operations Consultant"</small>
+                {% if form.position.errors %}
+                    {% for error in form.position.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.bio.label(class="form-label") }}
+                {{ form.bio(class="form-control editor", rows=8) }}
+                {% if form.bio.errors %}
+                    {% for error in form.bio.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.photo_url.label(class="form-label") }}
+                {{ form.photo_url(class="form-control") }}
+                <small class="form-text text-muted">URL to profile photo</small>
+                {% if form.photo_url.errors %}
+                    {% for error in form.photo_url.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            {% if consultant and consultant.photo_url %}
+                <div class="form-group mt-3 mb-3">
+                    <label>Current Photo:</label>
+                    <div>
+                        <img src="{{ consultant.photo_url }}" alt="{{ consultant.full_name }}" style="max-width: 150px; max-height: 150px;">
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="form-group mt-4">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('admin.consultant_manager') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize TinyMCE editor
+        tinymce.init({
+            selector: 'textarea.editor',
+            height: 300,
+            menubar: false,
+            plugins: [
+                'advlist autolink lists link charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        });
+        
+        // Show/hide new user fields based on user_id selection
+        const userIdSelect = document.getElementById('user_id');
+        const newUserFields = document.querySelectorAll('.new-user-field');
+        
+        if (userIdSelect) {
+            function toggleNewUserFields() {
+                const createNew = userIdSelect.value == 0;
+                
+                newUserFields.forEach(field => {
+                    field.style.display = createNew ? 'block' : 'none';
+                });
+            }
+            
+            // Initial state
+            toggleNewUserFields();
+            
+            // Add event listener
+            userIdSelect.addEventListener('change', toggleNewUserFields);
+        }
+    });
+</script>
+{% endblock %}

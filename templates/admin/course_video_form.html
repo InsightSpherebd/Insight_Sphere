@@ -1,0 +1,131 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-content">
+        <h1>{{ 'Edit' if video else 'Add' }} Video</h1>
+        <h4>Course: {{ course.title }}</h4>
+        
+        <form method="post" action="" novalidate>
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">
+                {{ form.title.label(class="form-label") }}
+                {{ form.title(class="form-control") }}
+                {% if form.title.errors %}
+                    {% for error in form.title.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control", rows=3) }}
+                {% if form.description.errors %}
+                    {% for error in form.description.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.video_type.label(class="form-label") }}
+                        {{ form.video_type(class="form-control") }}
+                        {% if form.video_type.errors %}
+                            {% for error in form.video_type.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.duration.label(class="form-label") }}
+                        {{ form.duration(class="form-control") }}
+                        <small class="form-text text-muted">e.g., "10:30", "45 min"</small>
+                        {% if form.duration.errors %}
+                            {% for error in form.duration.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                {{ form.video_url.label(class="form-label") }}
+                {{ form.video_url(class="form-control") }}
+                <div id="url-help" class="form-text text-muted">
+                    For YouTube: Use the full URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID)<br>
+                    For Vimeo: Use the full URL (e.g., https://vimeo.com/VIDEO_ID)<br>
+                    For uploaded videos: Enter the complete URL to the video file
+                </div>
+                {% if form.video_url.errors %}
+                    {% for error in form.video_url.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.order.label(class="form-label") }}
+                        {{ form.order(class="form-control") }}
+                        <small class="form-text text-muted">Determines the display order in the course</small>
+                        {% if form.order.errors %}
+                            {% for error in form.order.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-check mt-4">
+                        {{ form.is_published(class="form-check-input") }}
+                        {{ form.is_published.label(class="form-check-label") }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group mt-4">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('admin.course_videos', course_id=course.id) }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show appropriate helper text based on selected video type
+        const videoTypeSelect = document.getElementById('video_type');
+        const urlHelp = document.getElementById('url-help');
+        
+        function updateHelperText() {
+            const videoType = videoTypeSelect.value;
+            
+            if (videoType === 'youtube') {
+                urlHelp.innerHTML = 'Enter the full YouTube URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID)';
+            } else if (videoType === 'vimeo') {
+                urlHelp.innerHTML = 'Enter the full Vimeo URL (e.g., https://vimeo.com/VIDEO_ID)';
+            } else if (videoType === 'uploaded') {
+                urlHelp.innerHTML = 'Enter the complete URL to the video file';
+            }
+        }
+        
+        // Set initial helper text
+        updateHelperText();
+        
+        // Update helper text when video type changes
+        videoTypeSelect.addEventListener('change', updateHelperText);
+    });
+</script>
+{% endblock %}

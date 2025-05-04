@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="hero">
+    <div class="container">
+        <h2>My Certificates</h2>
+        <p>View and download your course completion certificates</p>
+    </div>
+</section>
+
+<!-- Certificates Content -->
+<section class="section">
+    <div class="container">
+        {% if certificates %}
+            <div class="row">
+                {% for certificate in certificates %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-content">
+                                <div class="text-center mb-4">
+                                    <i data-feather="award" style="width: 64px; height: 64px; color: #0066cc;"></i>
+                                </div>
+                                
+                                <h3 class="text-center mb-4">{{ certificate.course.title }}</h3>
+                                
+                                <div class="certificate-details">
+                                    <div class="row mb-2">
+                                        <div class="col-5 text-muted">Certificate ID:</div>
+                                        <div class="col-7">{{ certificate.certificate_number }}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 text-muted">Issued On:</div>
+                                        <div class="col-7">{{ certificate.issue_date.strftime('%d %B, %Y') }}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 text-muted">Recipient:</div>
+                                        <div class="col-7">{{ current_user.full_name }}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="certificate-actions mt-4 text-center">
+                                    <a href="{{ certificate.pdf_url }}" target="_blank" class="btn btn-primary">
+                                        <i data-feather="eye"></i> View Certificate
+                                    </a>
+                                    <a href="{{ certificate.pdf_url }}" download class="btn btn-outline-primary ms-2">
+                                        <i data-feather="download"></i> Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p>You haven't received any certificates yet.</p>
+                <p>Certificates are issued upon successful completion of courses. Once you complete a course, your certificate will be available here.</p>
+                <a href="{{ url_for('user.dashboard') }}" class="btn btn-primary mt-3">
+                    <i data-feather="arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

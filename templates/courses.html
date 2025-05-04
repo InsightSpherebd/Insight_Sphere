@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="hero">
+    <div class="container">
+        <h2>Courses & Events</h2>
+        <p>Explore our selection of professional development opportunities</p>
+    </div>
+</section>
+
+<!-- Course Listing -->
+<section class="section">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h3 class="mb-4">Available Courses</h3>
+                
+                {% if courses %}
+                    <div class="course-grid">
+                        {% for course in courses %}
+                            <div class="card">
+                                <div class="card-content">
+                                    <h3 class="card-title">{{ course.title }}</h3>
+                                    <div class="card-meta">
+                                        <div>
+                                            <i data-feather="calendar"></i>
+                                            {% if course.date %}
+                                                {{ course.date.strftime('%d %b, %Y') }}
+                                            {% else %}
+                                                Flexible
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <i data-feather="clock"></i>
+                                            {{ course.duration }}
+                                        </div>
+                                        <div>
+                                            <i data-feather="tag"></i>
+                                            {% if course.fee > 0 %}
+                                                {{ course.fee }} BDT
+                                            {% else %}
+                                                Free
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <p class="card-text">{{ course.description|truncate(150) }}</p>
+                                    
+                                    <div class="card-footer">
+                                        <div class="seats">
+                                            <i data-feather="users"></i>
+                                            {% if course.capacity %}
+                                                {{ course.available_seats() }} seats available
+                                            {% else %}
+                                                Unlimited seats
+                                            {% endif %}
+                                        </div>
+                                        <a href="{{ url_for('public.course_detail', course_id=course.id) }}" class="btn btn-primary">Learn More</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state text-center p-5 bg-light rounded">
+                        <div class="mb-3">
+                            <i data-feather="calendar" style="width: 48px; height: 48px; color: #666;"></i>
+                        </div>
+                        <h4>No Courses Available</h4>
+                        <p>We're currently preparing new courses. Please check back soon or contact us for more information.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Course Categories / Filters (Optional for future enhancement) -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h3 class="mb-4">Course Categories</h3>
+                
+                <div class="category-cards">
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-content">
+                                    <h4><i data-feather="settings"></i> Process Optimization</h4>
+                                    <p>Courses focused on improving efficiency and reducing waste in industrial processes.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-content">
+                                    <h4><i data-feather="check-square"></i> Quality Management</h4>
+                                    <p>Learn techniques and methodologies for ensuring product and service quality.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-content">
+                                    <h4><i data-feather="trending-up"></i> Leadership Development</h4>
+                                    <p>Enhance your leadership capabilities in industrial and engineering contexts.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Open Registration Form -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="section-title">
+            <h2>Can't Find What You're Looking For?</h2>
+            <p>Let us know what courses or training you'd be interested in</p>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-content">
+                        <p>If you're interested in a specific industrial engineering topic not covered in our current course listings, we'd love to hear from you. We regularly develop new courses based on industry demand.</p>
+                        
+                        <div class="text-center mt-4">
+                            <a href="mailto:info@insightspherebd.com" class="btn btn-primary">
+                                <i data-feather="mail"></i> Contact Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

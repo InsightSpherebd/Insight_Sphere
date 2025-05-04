@@ -1,0 +1,76 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Consultant Management</h1>
+    <a href="{{ url_for('admin.consultant_add') }}" class="btn btn-primary">
+        <i data-feather="plus"></i> Add New Consultant
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-content">
+        {% if consultants %}
+            <div class="row">
+                {% for consultant in consultants %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-content text-center">
+                                {% if consultant.photo_url %}
+                                    <img src="{{ consultant.photo_url }}" alt="{{ consultant.full_name }}" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                {% else %}
+                                    <svg class="bd-placeholder-img rounded-circle mb-3" width="150" height="150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Consultant" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                        <title>Placeholder</title>
+                                        <rect width="100%" height="100%" fill="#868e96"></rect>
+                                        <text x="50%" y="50%" fill="#dee2e6" dy=".3em">No Image</text>
+                                    </svg>
+                                {% endif %}
+                                
+                                <h3>{{ consultant.full_name }}</h3>
+                                <p class="text-muted">{{ consultant.position }}</p>
+                                <div class="bio mb-3">
+                                    {{ consultant.bio|truncate(150)|safe }}
+                                </div>
+                                
+                                <div class="mt-auto">
+                                    <a href="{{ url_for('admin.consultant_edit', consultant_id=consultant.id) }}" class="btn btn-primary">Edit</a>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ consultant.id }}">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Delete Modal -->
+                    <div class="modal fade" id="deleteModal{{ consultant.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Confirm Remove</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to remove "{{ consultant.full_name }}" from the consultants list?</p>
+                                    <p class="text-muted">This will only remove them from being displayed as a consultant, but will not delete their user account.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form action="{{ url_for('admin.consultant_delete', consultant_id=consultant.id) }}" method="post">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                        <button type="submit" class="btn btn-danger">Remove</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p>No consultants found. Click the "Add New Consultant" button to create one.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

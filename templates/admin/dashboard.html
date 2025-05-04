@@ -1,0 +1,136 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div x-data="adminDashboard">
+    <h1>Admin Dashboard</h1>
+    <p>Welcome back, {{ current_user.full_name or current_user.username }}!</p>
+    
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i data-feather="book-open" style="width: 32px; height: 32px;"></i>
+            <h3>{{ course_count }}</h3>
+            <p>Courses</p>
+        </div>
+        
+        <div class="stat-card">
+            <i data-feather="users" style="width: 32px; height: 32px;"></i>
+            <h3>{{ user_count }}</h3>
+            <p>Users</p>
+        </div>
+        
+        <div class="stat-card">
+            <i data-feather="credit-card" style="width: 32px; height: 32px;"></i>
+            <h3>{{ payment_total }} BDT</h3>
+            <p>Total Revenue</p>
+        </div>
+    </div>
+    
+    <!-- Dashboard Tabs -->
+    <div class="mt-5">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a @click.prevent="setActiveTab('overview')" :class="{'active': isActiveTab('overview')}" class="nav-link" href="#">Overview</a>
+            </li>
+            <li class="nav-item">
+                <a @click.prevent="setActiveTab('registrations')" :class="{'active': isActiveTab('registrations')}" class="nav-link" href="#">Recent Registrations</a>
+            </li>
+        </ul>
+        
+        <div class="tab-content mt-3">
+            <!-- Overview Tab -->
+            <div x-show="isActiveTab('overview')" class="tab-pane active">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Quick Actions</h3>
+                        <div class="list-group">
+                            <a href="{{ url_for('admin.course_add') }}" class="list-group-item list-group-item-action">
+                                <i data-feather="plus-circle"></i> Add New Course
+                            </a>
+                            <a href="{{ url_for('admin.content_add') }}" class="list-group-item list-group-item-action">
+                                <i data-feather="edit-3"></i> Add New Content
+                            </a>
+                            <a href="{{ url_for('admin.consultant_add') }}" class="list-group-item list-group-item-action">
+                                <i data-feather="user-plus"></i> Add New Consultant
+                            </a>
+                            <a href="{{ url_for('admin.certificate_template_add') }}" class="list-group-item list-group-item-action">
+                                <i data-feather="award"></i> Create Certificate Template
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h3>System Information</h3>
+                        <div class="card">
+                            <div class="card-content">
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th>Environment:</th>
+                                        <td>{{ config.get('ENV', 'production') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Site Domain:</th>
+                                        <td>{{ config.get('DOMAIN', 'localhost') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email Configured:</th>
+                                        <td>{% if config.get('MAIL_USERNAME') %}Yes{% else %}No{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Payment System:</th>
+                                        <td>{% if config.get('STRIPE_SECRET_KEY') %}Stripe Enabled{% else %}Not Configured{% endif %}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Registrations Tab -->
+            <div x-show="isActiveTab('registrations')" class="tab-pane">
+                <h3>Recent Registrations</h3>
+                
+                {% if recent_registrations %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Course</th>
+                                    <th>Registration Date</th>
+                                    <th>Payment Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user, course, reg in recent_registrations %}
+                                    <tr>
+                                        <td>{{ user.full_name }} ({{ user.email }})</td>
+                                        <td>{{ course.title }}</td>
+                                        <td>{{ reg.registration_date.strftime('%d %b, %Y') }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'success' if reg.payment_status == 'completed' else 'warning' }}">
+                                                {{ reg.payment_status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('admin.course_participants', course_id=course.id) }}" class="btn btn-sm btn-primary">
+                                                View Details
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        No recent registrations found.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

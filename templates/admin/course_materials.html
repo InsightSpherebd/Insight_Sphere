@@ -1,0 +1,89 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Materials for "{{ course.title }}"</h1>
+    <div>
+        <a href="{{ url_for('admin.course_manager') }}" class="btn btn-secondary">
+            <i data-feather="arrow-left"></i> Back to Courses
+        </a>
+        <a href="{{ url_for('admin.course_material_add', course_id=course.id) }}" class="btn btn-primary">
+            <i data-feather="plus"></i> Add Material
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-content">
+        {% if materials %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Title</th>
+                            <th>File Type</th>
+                            <th>Published</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sortable-list" data-order-url="{{ url_for('admin.course_materials', course_id=course.id) }}">
+                        {% for material in materials %}
+                            <tr data-item-id="{{ material.id }}">
+                                <td>
+                                    <i data-feather="menu" class="sort-handle" style="cursor: move;"></i>
+                                    {{ material.order }}
+                                </td>
+                                <td>{{ material.title }}</td>
+                                <td>{{ material.file_type|upper }}</td>
+                                <td>
+                                    <span class="badge {{ 'bg-success' if material.is_published else 'bg-secondary' }}">
+                                        {{ 'Yes' if material.is_published else 'No' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin.course_material_edit', material_id=material.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ material.id }}">
+                                        Delete
+                                    </button>
+                                    
+                                    <!-- View button -->
+                                    <a href="{{ material.file_url }}" target="_blank" class="btn btn-sm btn-info">
+                                        View
+                                    </a>
+                                    
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="deleteModal{{ material.id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete the material "{{ material.title }}"?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form action="{{ url_for('admin.course_material_delete', material_id=material.id) }}" method="post">
+                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p>No materials found for this course. Click the "Add Material" button to add one.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

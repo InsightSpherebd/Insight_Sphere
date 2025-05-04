@@ -1,0 +1,136 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div x-data="certificateBuilder">
+    <div class="card">
+        <div class="card-content">
+            <h1>{{ 'Edit' if template else 'Create New' }} Certificate Template</h1>
+            
+            <div class="mb-4">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" :class="{'active': !previewMode}" @click="editTemplate">
+                        <i data-feather="edit"></i> Edit Template
+                    </button>
+                    <button type="button" class="btn btn-primary" :class="{'active': previewMode}" @click="previewCertificate">
+                        <i data-feather="eye"></i> Preview
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Template Preview -->
+            <div x-show="previewMode" class="mb-4">
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="mb-3">Certificate Preview</h3>
+                        <iframe id="certificate-preview-frame" class="certificate-preview-frame" style="width: 100%; height: 600px; border: 1px solid #ddd;"></iframe>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Template Form -->
+            <div x-show="!previewMode">
+                <form method="post" action="" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form.name.label(class="form-label") }}
+                                {{ form.name(class="form-control", x_model="template.name") }}
+                                {% if form.name.errors %}
+                                    {% for error in form.name.errors %}
+                                    <span class="form-text text-danger">{{ error }}</span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form.background_url.label(class="form-label") }}
+                                {{ form.background_url(class="form-control", x_model="template.background_url") }}
+                                <small class="form-text text-muted">Enter a URL to an image to use as the certificate background</small>
+                                {% if form.background_url.errors %}
+                                    {% for error in form.background_url.errors %}
+                                    <span class="form-text text-danger">{{ error }}</span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.html_template.label(class="form-label") }}
+                        {{ form.html_template(class="form-control code-editor", rows=15, x_model="template.html_template") }}
+                        <small class="form-text text-muted">
+                            HTML template for the certificate. Available variables: {{ "{{user}}, {{course}}, {{certificate}}, {{date}}" }}
+                        </small>
+                        {% if form.html_template.errors %}
+                            {% for error in form.html_template.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        {{ form.is_default(class="form-check-input") }}
+                        {{ form.is_default.label(class="form-check-label") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-primary") }}
+                        <a href="{{ url_for('admin.certificate_templates') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="button" class="btn btn-info" @click="previewCertificate">
+                            <i data-feather="eye"></i> Preview
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Alpine data for certificate builder
+        window.addEventListener('alpine:init', () => {
+            Alpine.data('certificateBuilder', () => ({
+                template: {
+                    name: '{{ template.name if template else "New Certificate Template" }}',
+                    background_url: '{{ template.background_url if template else "" }}',
+                    html_template: `{{ template.html_template if template else ''|default(default_template, true) }}`
+                },
+                previewMode: false,
+                
+                previewCertificate() {
+                    this.previewMode = true;
+                    
+                    // Use setTimeout to give the DOM time to update
+                    setTimeout(() => {
+                        const previewFrame = document.getElementById('certificate-preview-frame');
+                        if (previewFrame) {
+                            const frameDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+                            frameDoc.open();
+                            // Replace sample variables in preview
+                            let previewHtml = this.template.html_template
+                                .replace(/{{user.full_name}}/g, 'John Doe')
+                                .replace(/{{course.title}}/g, 'Industrial Engineering Fundamentals')
+                                .replace(/{{certificate.certificate_number}}/g, 'CERT-1234-5678')
+                                .replace(/{{date}}/g, new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}));
+                            
+                            frameDoc.write(previewHtml);
+                            frameDoc.close();
+                        }
+                    }, 50);
+                },
+                
+                editTemplate() {
+                    this.previewMode = false;
+                }
+            }));
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Participants for "{{ course.title }}"</h1>
+        <p>Manage registrations and certificates for this course</p>
+    </div>
+    <div>
+        <a href="{{ url_for('admin.course_manager') }}" class="btn btn-secondary">
+            <i data-feather="arrow-left"></i> Back to Courses
+        </a>
+        
+        <a href="{{ url_for('admin.export_participants', course_id=course.id) }}" class="btn btn-primary">
+            <i data-feather="download"></i> Export CSV
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-content">
+        {% if participants %}
+            <!-- Certificate Template Selector -->
+            <div class="mb-4">
+                <h4>Certificate Generation</h4>
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <select id="certificate-template-select" class="form-control">
+                            <option value="">-- Select Certificate Template --</option>
+                            {% for template in certificate_templates|default([]) %}
+                                <option value="{{ template.id }}" {{ 'selected' if template.is_default else '' }}>
+                                    {{ template.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Registration Date</th>
+                            <th>Payment Status</th>
+                            <th>Completion Status</th>
+                            <th>Certificate</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user, reg in participants %}
+                            <tr>
+                                <td>{{ user.full_name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ reg.registration_date.strftime('%d %b, %Y') if reg.registration_date else 'N/A' }}</td>
+                                <td>
+                                    <span class="badge {{ 'bg-success' if reg.payment_status == 'completed' else 'bg-warning' }}">
+                                        {{ reg.payment_status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input participant-status-toggle" 
+                                               id="complete-{{ user.id }}" 
+                                               data-user-id="{{ user.id }}" 
+                                               data-course-id="{{ course.id }}" 
+                                               {{ 'checked' if reg.completion_status else '' }}>
+                                        <label class="form-check-label" for="complete-{{ user.id }}">
+                                            {{ 'Completed' if reg.completion_status else 'Not Completed' }}
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if reg.certificate_issued %}
+                                        <span class="badge bg-success">Issued</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Not Issued</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button type="button" 
+                                            class="btn btn-sm btn-primary generate-certificate" 
+                                            data-user-id="{{ user.id }}" 
+                                            data-course-id="{{ course.id }}"
+                                            {{ 'disabled' if not reg.completion_status or reg.certificate_issued }}>
+                                        Generate Certificate
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p>No participants have registered for this course yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize participants status toggles
+        setupParticipantStatusToggles();
+        
+        // Initialize certificate generation
+        setupCertificateGeneration();
+    });
+</script>
+{% endblock %}

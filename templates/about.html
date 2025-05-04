@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="hero">
+    <div class="container">
+        <h2>About Insight Sphere BD</h2>
+        <p>Learn more about our mission, vision, and the team behind Insight Sphere BD</p>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Mission & Vision</h2>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                {% if mission_vision %}
+                    <div class="about-content">
+                        <h3>{{ mission_vision.title }}</h3>
+                        <div>{{ mission_vision.content|safe }}</div>
+                    </div>
+                {% else %}
+                    <div class="about-content">
+                        <h3>Our Mission</h3>
+                        <p>To provide world-class industrial engineering education and consultancy services that empower professionals to excel in their careers and drive innovation in their industries.</p>
+                        
+                        <h3>Our Vision</h3>
+                        <p>To be the leading provider of industrial engineering knowledge and expertise in Bangladesh, creating a community of skilled professionals who contribute to industrial advancement and economic growth.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Us Content -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="section-title">
+            <h2>About Us</h2>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                {% if about_content %}
+                    {% for item in about_content %}
+                        <div class="about-section mb-5">
+                            {% if item.title %}
+                                <h3>{{ item.title }}</h3>
+                            {% endif %}
+                            <div>{{ item.content|safe }}</div>
+                            
+                            {% if item.media_url %}
+                                <img src="{{ item.media_url }}" alt="{{ item.title }}" class="img-fluid mt-3">
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="about-section mb-5">
+                        <h3>Who We Are</h3>
+                        <p>Insight Sphere BD is a premier industrial engineering consultancy and training center, committed to advancing the field of industrial engineering in Bangladesh. Established by a team of passionate industry experts and academicians, we bridge the gap between theoretical knowledge and practical application.</p>
+                        
+                        <p>Our team consists of experienced professionals who have worked with leading organizations across various sectors, bringing real-world expertise to our courses and consultancy services.</p>
+                    </div>
+                    
+                    <div class="about-section mb-5">
+                        <h3>What We Offer</h3>
+                        <p>We provide comprehensive training programs, workshops, and certification courses designed to enhance professional skills and knowledge in industrial engineering disciplines. Our offerings include:</p>
+                        
+                        <ul>
+                            <li>Specialized courses in lean manufacturing, quality management, and process optimization</li>
+                            <li>Professional development workshops for career advancement</li>
+                            <li>Customized consultancy services for businesses seeking to improve operational efficiency</li>
+                            <li>Industry-recognized certifications to validate expertise</li>
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Team / Consultants -->
+<section class="section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Consultants</h2>
+            <p>Meet the experts behind Insight Sphere BD</p>
+        </div>
+        
+        <div class="team-grid">
+            {% if consultants %}
+                {% for consultant in consultants %}
+                    <div class="team-member">
+                        {% if consultant.photo_url %}
+                            <img src="{{ consultant.photo_url }}" alt="{{ consultant.full_name }}">
+                        {% else %}
+                            <svg class="bd-placeholder-img rounded-circle" width="150" height="150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Consultant" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                <title>Placeholder</title>
+                                <rect width="100%" height="100%" fill="#868e96"></rect>
+                                <text x="50%" y="50%" fill="#dee2e6" dy=".3em">No Image</text>
+                            </svg>
+                        {% endif %}
+                        <h3>{{ consultant.full_name }}</h3>
+                        <p class="position">{{ consultant.position }}</p>
+                        <div class="bio">{{ consultant.bio|truncate(150)|safe }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>Our consultant profiles are being updated. Please check back soon.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

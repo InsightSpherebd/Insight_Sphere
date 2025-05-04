@@ -1,0 +1,241 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Course Header -->
+<section class="course-header">
+    <div class="container">
+        <h1>{{ course.title }}</h1>
+        <div class="course-meta-header">
+            <div><i data-feather="calendar"></i> 
+                {% if course.date %}
+                    {{ course.date.strftime('%d %B, %Y') }}
+                {% else %}
+                    Flexible Schedule
+                {% endif %}
+            </div>
+            <div><i data-feather="clock"></i> {{ course.duration }}</div>
+            <div><i data-feather="map-pin"></i> 
+                {% if course.is_online %}
+                    Online
+                {% else %}
+                    {{ course.location }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Course Details -->
+<section class="section">
+    <div class="container">
+        <div class="course-details">
+            <div class="course-content">
+                <h2>Course Description</h2>
+                <div class="course-description">
+                    {{ course.description|safe }}
+                </div>
+                
+                <div class="mt-5">
+                    <h2>What You'll Learn</h2>
+                    <div class="mt-3">
+                        <!-- Course outcomes could be dynamically loaded in the future -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="course-outcomes">
+                                    <li><i data-feather="check"></i> Practical industrial engineering skills</li>
+                                    <li><i data-feather="check"></i> Industry best practices</li>
+                                    <li><i data-feather="check"></i> Implementation techniques</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="course-outcomes">
+                                    <li><i data-feather="check"></i> Problem-solving methodologies</li>
+                                    <li><i data-feather="check"></i> Process optimization</li>
+                                    <li><i data-feather="check"></i> Quality management systems</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course Preview/Sample Video (if available) -->
+                {% if course.videos and course.videos|selectattr('is_published', 'equalto', True)|list|length > 0 %}
+                    <div class="mt-5">
+                        <h2>Course Preview</h2>
+                        <div class="mt-3">
+                            {% for video in course.videos|selectattr('is_published', 'equalto', True)|list %}
+                                {% if loop.index == 1 %}
+                                    <div class="video-container" data-video-type="{{ video.video_type }}" data-video-id="{{ video.video_url.split('/')[-1] }}">
+                                        <div class="video-placeholder">
+                                            <div class="play-button">
+                                                <i data-feather="play-circle"></i>
+                                            </div>
+                                            <span>Click to play preview</span>
+                                        </div>
+                                    </div>
+                                    <h4>{{ video.title }}</h4>
+                                    <p>{{ video.description }}</p>
+                                {% endif %}
+                            {% endfor %}
+                            <p class="mt-3">Register for this course to access all learning materials.</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="course-sidebar">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="price">
+                            {% if course.fee > 0 %}
+                                {{ course.fee }} BDT
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </div>
+                        
+                        <div class="course-meta">
+                            <div>
+                                <i data-feather="users"></i>
+                                <span>Capacity: {{ course.capacity if course.capacity else 'Unlimited' }}</span>
+                            </div>
+                            <div>
+                                <i data-feather="tag"></i>
+                                <span>Available Seats: {{ course.available_seats() }}</span>
+                            </div>
+                            {% if course.is_online %}
+                                <div>
+                                    <i data-feather="monitor"></i>
+                                    <span>Online Course</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mt-4">
+                            {% if course.registration_open %}
+                                {% if is_registered %}
+                                    <div class="alert alert-success">
+                                        <i data-feather="check-circle"></i> You are registered for this course
+                                    </div>
+                                    <a href="{{ url_for('user.course_access', course_id=course.id) }}" class="btn btn-primary btn-block">
+                                        Access Course
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('public.register_course', course_id=course.id) }}" class="btn btn-primary btn-block">
+                                        Register Now
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    <i data-feather="alert-circle"></i> Registration is currently closed
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course Instructor -->
+                {% if course.creator and course.creator.is_consultant %}
+                    <div class="card mt-4">
+                        <div class="card-content">
+                            <h3>Instructor</h3>
+                            <div class="instructor">
+                                {% if course.creator.photo_url %}
+                                    <img src="{{ course.creator.photo_url }}" alt="{{ course.creator.full_name }}" class="instructor-img">
+                                {% endif %}
+                                <h4>{{ course.creator.full_name }}</h4>
+                                <p>{{ course.creator.position }}</p>
+                                <div class="instructor-bio">
+                                    {{ course.creator.bio|truncate(100)|safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Courses -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="section-title">
+            <h2>Similar Courses</h2>
+            <p>You might also be interested in these courses</p>
+        </div>
+        
+        <div class="course-grid">
+            {% set related_courses = courses|default([]) %}
+            {% if related_courses|length > 0 %}
+                {% for related_course in related_courses %}
+                    {% if related_course.id != course.id and loop.index <= 3 %}
+                        <div class="card">
+                            <div class="card-content">
+                                <h3 class="card-title">{{ related_course.title }}</h3>
+                                <div class="card-meta">
+                                    <div>
+                                        <i data-feather="calendar"></i>
+                                        {% if related_course.date %}
+                                            {{ related_course.date.strftime('%d %b, %Y') }}
+                                        {% else %}
+                                            Flexible
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <i data-feather="tag"></i>
+                                        {% if related_course.fee > 0 %}
+                                            {{ related_course.fee }} BDT
+                                        {% else %}
+                                            Free
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <p class="card-text">{{ related_course.description|truncate(100) }}</p>
+                                <a href="{{ url_for('public.course_detail', course_id=related_course.id) }}" class="btn btn-primary">Learn More</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>Check back soon for more courses.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle video preview click
+        const videoContainers = document.querySelectorAll('.video-container');
+        
+        videoContainers.forEach(container => {
+            const placeholder = container.querySelector('.video-placeholder');
+            if (placeholder) {
+                placeholder.addEventListener('click', function() {
+                    const videoType = container.dataset.videoType;
+                    const videoId = container.dataset.videoId;
+                    
+                    if (!videoType || !videoId) return;
+                    
+                    let embedHtml = '';
+                    
+                    if (videoType === 'youtube') {
+                        embedHtml = `<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+                    } else if (videoType === 'vimeo') {
+                        embedHtml = `<iframe src="https://player.vimeo.com/video/${videoId}" allowfullscreen></iframe>`;
+                    }
+                    
+                    if (embedHtml) {
+                        container.innerHTML = embedHtml;
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

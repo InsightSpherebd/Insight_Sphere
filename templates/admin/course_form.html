@@ -1,0 +1,178 @@
+{% extends "admin/layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-content">
+        <h1>{{ 'Edit' if course else 'Add' }} Course</h1>
+        
+        <form method="post" action="" novalidate>
+            {{ form.hidden_tag() }}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.title.label(class="form-label") }}
+                        {{ form.title(class="form-control") }}
+                        {% if form.title.errors %}
+                            {% for error in form.title.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.date.label(class="form-label") }}
+                        {{ form.date(class="form-control", type="datetime-local") }}
+                        <small class="form-text text-muted">Format: YYYY-MM-DD HH:MM</small>
+                        {% if form.date.errors %}
+                            {% for error in form.date.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control editor", rows=10) }}
+                {% if form.description.errors %}
+                    {% for error in form.description.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.duration.label(class="form-label") }}
+                        {{ form.duration(class="form-control") }}
+                        <small class="form-text text-muted">e.g., "3 days", "2 weeks"</small>
+                        {% if form.duration.errors %}
+                            {% for error in form.duration.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.fee.label(class="form-label") }}
+                        {{ form.fee(class="form-control") }}
+                        <small class="form-text text-muted">Enter 0 for free courses</small>
+                        {% if form.fee.errors %}
+                            {% for error in form.fee.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.capacity.label(class="form-label") }}
+                        {{ form.capacity(class="form-control") }}
+                        <small class="form-text text-muted">Enter 0 for unlimited capacity</small>
+                        {% if form.capacity.errors %}
+                            {% for error in form.capacity.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.location.label(class="form-label") }}
+                        {{ form.location(class="form-control") }}
+                        <small class="form-text text-muted">Leave empty for online courses</small>
+                        {% if form.location.errors %}
+                            {% for error in form.location.errors %}
+                            <span class="form-text text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-check mb-3">
+                {{ form.is_online(class="form-check-input") }}
+                {{ form.is_online.label(class="form-check-label") }}
+            </div>
+            
+            <div class="form-group" id="sessionLinkGroup">
+                {{ form.session_link.label(class="form-label") }}
+                {{ form.session_link(class="form-control") }}
+                <small class="form-text text-muted">Zoom, Google Meet, or other meeting link</small>
+                {% if form.session_link.errors %}
+                    {% for error in form.session_link.errors %}
+                    <span class="form-text text-danger">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="form-check mb-3">
+                {{ form.is_published(class="form-check-input") }}
+                {{ form.is_published.label(class="form-check-label") }}
+            </div>
+            
+            <div class="form-check mb-3">
+                {{ form.registration_open(class="form-check-input") }}
+                {{ form.registration_open.label(class="form-check-label") }}
+            </div>
+            
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('admin.course_manager') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize TinyMCE editor
+        tinymce.init({
+            selector: 'textarea.editor',
+            height: 400,
+            menubar: false,
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        });
+        
+        // Show/hide session link based on is_online checkbox
+        const isOnlineCheckbox = document.getElementById('is_online');
+        const sessionLinkGroup = document.getElementById('sessionLinkGroup');
+        
+        function toggleSessionLink() {
+            if (isOnlineCheckbox.checked) {
+                sessionLinkGroup.style.display = 'block';
+            } else {
+                sessionLinkGroup.style.display = 'none';
+            }
+        }
+        
+        // Initial state
+        toggleSessionLink();
+        
+        // Add event listener
+        isOnlineCheckbox.addEventListener('change', toggleSessionLink);
+    });
+</script>
+{% endblock %}
