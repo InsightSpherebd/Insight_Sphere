@@ -9,11 +9,9 @@ user_bp = Blueprint('user', __name__)
 @login_required
 def dashboard():
     # Get user's registered courses
-    stmt = db.select([Course, registrations]).join(
+    results = db.session.query(Course, registrations).join(
         registrations, Course.id == registrations.c.course_id
-    ).where(registrations.c.user_id == current_user.id)
-    
-    results = db.session.execute(stmt).fetchall()
+    ).filter(registrations.c.user_id == current_user.id).all()
     
     # Format data for template
     courses = []
@@ -45,11 +43,11 @@ def course_access(course_id):
         return redirect(url_for('user.dashboard'))
     
     # Check payment status
-    stmt = db.select([registrations.c.payment_status]).where(
+    registration = db.session.query(registrations).filter(
         (registrations.c.user_id == current_user.id) & 
         (registrations.c.course_id == course_id)
-    )
-    payment_status = db.session.execute(stmt).scalar()
+    ).first()
+    payment_status = registration.payment_status if registration else None
     
     if payment_status != 'completed' and course.fee > 0:
         flash('Please complete your payment to access course materials.', 'warning')
