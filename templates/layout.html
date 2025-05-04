@@ -103,7 +103,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; {{ now.year }} Insight Sphere BD. All Rights Reserved.</p>
+                <p>&copy; {{ now.year }} Insight Sphere BD. All Rights Reserved. {% if not current_user.is_authenticated %}<a href="{{ url_for('auth.admin_login') }}" class="text-muted small">Admin Login</a>{% endif %}</p>
             </div>
         </div>
     </footer>
