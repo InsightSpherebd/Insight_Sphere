@@ -43,6 +43,22 @@ with app.app_context():
     import models
     db.create_all()
     
+    # Create super admin user if not exists
+    from models import User
+    super_admin = User.query.filter_by(email='admin@insightspherebd.com').first()
+    if not super_admin:
+        super_admin = User(
+            username='superadmin',
+            email='admin@insightspherebd.com',
+            full_name='System Administrator',
+            phone='+88019XXXXXXXX',
+            role='super_admin'
+        )
+        super_admin.set_password('Admin@123')
+        db.session.add(super_admin)
+        db.session.commit()
+        logging.info('Created super admin user')
+    
     # Add new columns to Course table if they don't exist
     from sqlalchemy import text
     try:
