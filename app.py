@@ -25,7 +25,9 @@ csrf = CSRFProtect()
 # Create app
 app = Flask(__name__)
 app.config.from_object('config.Config')
-app.secret_key = os.environ.get("SESSION_SECRET")
+app.secret_key = os.environ.get("SESSION_SECRET", "dev_key")  # Use config secret key as fallback
+if not app.secret_key:
+    app.secret_key = app.config['SECRET_KEY']
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Initialize extensions with app
@@ -62,18 +64,22 @@ with app.app_context():
     # Add new columns to Course table if they don't exist
     from sqlalchemy import text
     try:
-        db.session.execute(text("""ALTER TABLE course 
-            ADD COLUMN IF NOT EXISTS payment_methods VARCHAR(255) DEFAULT 'stripe,sslcommerz,manual',
-            ADD COLUMN IF NOT EXISTS allow_bkash BOOLEAN DEFAULT TRUE,
-            ADD COLUMN IF NOT EXISTS allow_nagad BOOLEAN DEFAULT TRUE,
-            ADD COLUMN IF NOT EXISTS allow_rocket BOOLEAN DEFAULT TRUE,
-            ADD COLUMN IF NOT EXISTS allow_cards BOOLEAN DEFAULT TRUE;
-        """))
-        db.session.commit()
+        for column in [
+            ("payment_methods", "VARCHAR(255) DEFAULT 'stripe,sslcommerz,manual'"),
+            ("allow_bkash", "BOOLEAN DEFAULT 1"),
+            ("allow_nagad", "BOOLEAN DEFAULT 1"),
+            ("allow_rocket", "BOOLEAN DEFAULT 1"),
+            ("allow_cards", "BOOLEAN DEFAULT 1")
+        ]:
+            try:
+                db.session.execute(text(f"ALTER TABLE course ADD COLUMN {column[0]} {column[1]};"))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+                # Column may already exist
+                pass
     except Exception as e:
-        db.session.rollback()
         app.logger.error(f"Error updating schema: {str(e)}")
-        pass
 
 # Register blueprints
 from routes.auth import auth_bp
