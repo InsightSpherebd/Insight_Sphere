@@ -1,0 +1,309 @@
+\==> Cloning from [https://github.com/InsightSpherebd/Insight\_Sphere](https://github.com/InsightSpherebd/Insight_Sphere)
+\==> Checking out commit 75dd320a62a5e23dd265c86747c6a3e1b496d165 in branch main
+\==> Downloading cache...
+\==> Transferred 122MB in 8s. Extraction took 2s.
+\==> Using Python version 3.11.11 (default)
+\==> Docs on specifying a Python version: [https://render.com/docs/python-version](https://render.com/docs/python-version)
+\==> Using Poetry version 1.7.1 (default)
+\==> Docs on specifying a Poetry version: [https://render.com/docs/poetry-version](https://render.com/docs/poetry-version)
+\==> Running build command 'pip install -r requirements.txt'...
+Collecting email-validator>=2.2.0 (from -r requirements.txt (line 1))
+Using cached email\_validator-2.2.0-py3-none-any.whl.metadata (25 kB)
+Collecting flask-login>=0.6.3 (from -r requirements.txt (line 2))
+Using cached Flask\_Login-0.6.3-py3-none-any.whl.metadata (5.8 kB)
+Collecting flask>=3.1.0 (from -r requirements.txt (line 3))
+Using cached flask-3.1.0-py3-none-any.whl.metadata (2.7 kB)
+Collecting flask-sqlalchemy>=3.1.1 (from -r requirements.txt (line 4))
+Using cached flask\_sqlalchemy-3.1.1-py3-none-any.whl.metadata (3.4 kB)
+Collecting gunicorn>=23.0.0 (from -r requirements.txt (line 5))
+Using cached gunicorn-23.0.0-py3-none-any.whl.metadata (4.4 kB)
+Collecting psycopg2-binary>=2.9.10 (from -r requirements.txt (line 6))
+Using cached psycopg2\_binary-2.9.10-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl.metadata (4.9 kB)
+Collecting flask-wtf>=1.2.2 (from -r requirements.txt (line 7))
+Using cached flask\_wtf-1.2.2-py3-none-any.whl.metadata (3.4 kB)
+Collecting flask-mail>=0.10.0 (from -r requirements.txt (line 8))
+Using cached flask\_mail-0.10.0-py3-none-any.whl.metadata (2.1 kB)
+Collecting requests>=2.32.3 (from -r requirements.txt (line 9))
+Using cached requests-2.32.3-py3-none-any.whl.metadata (4.6 kB)
+Collecting stripe>=12.1.0 (from -r requirements.txt (line 10))
+Using cached stripe-12.1.0-py2.py3-none-any.whl.metadata (2.9 kB)
+Collecting weasyprint>=65.1 (from -r requirements.txt (line 11))
+Using cached weasyprint-65.1-py3-none-any.whl.metadata (3.7 kB)
+Collecting dnspython>=2.0.0 (from email-validator>=2.2.0->-r requirements.txt (line 1))
+Using cached dnspython-2.7.0-py3-none-any.whl.metadata (5.8 kB)
+Collecting idna>=2.0.0 (from email-validator>=2.2.0->-r requirements.txt (line 1))
+Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
+Collecting Werkzeug>=1.0.1 (from flask-login>=0.6.3->-r requirements.txt (line 2))
+Using cached werkzeug-3.1.3-py3-none-any.whl.metadata (3.7 kB)
+Collecting Jinja2>=3.1.2 (from flask>=3.1.0->-r requirements.txt (line 3))
+Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting itsdangerous>=2.2 (from flask>=3.1.0->-r requirements.txt (line 3))
+Using cached itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting click>=8.1.3 (from flask>=3.1.0->-r requirements.txt (line 3))
+Using cached click-8.1.8-py3-none-any.whl.metadata (2.3 kB)
+Collecting blinker>=1.9 (from flask>=3.1.0->-r requirements.txt (line 3))
+Using cached blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+Collecting sqlalchemy>=2.0.16 (from flask-sqlalchemy>=3.1.1->-r requirements.txt (line 4))
+Using cached sqlalchemy-2.0.40-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl.metadata (9.6 kB)
+Collecting packaging (from gunicorn>=23.0.0->-r requirements.txt (line 5))
+Using cached packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting wtforms (from flask-wtf>=1.2.2->-r requirements.txt (line 7))
+Using cached wtforms-3.2.1-py3-none-any.whl.metadata (5.3 kB)
+Collecting charset-normalizer<4,>=2 (from requests>=2.32.3->-r requirements.txt (line 9))
+Using cached charset\_normalizer-3.4.2-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl.metadata (35 kB)
+Collecting urllib3<3,>=1.21.1 (from requests>=2.32.3->-r requirements.txt (line 9))
+Using cached urllib3-2.4.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting certifi>=2017.4.17 (from requests>=2.32.3->-r requirements.txt (line 9))
+Using cached certifi-2025.4.26-py3-none-any.whl.metadata (2.5 kB)
+Collecting typing\_extensions>=4.5.0 (from stripe>=12.1.0->-r requirements.txt (line 10))
+Using cached typing\_extensions-4.13.2-py3-none-any.whl.metadata (3.0 kB)
+Collecting pydyf>=0.11.0 (from weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached pydyf-0.11.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting cffi>=0.6 (from weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached cffi-1.17.1-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl.metadata (1.5 kB)
+Collecting tinyhtml5>=2.0.0b1 (from weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached tinyhtml5-2.0.0-py3-none-any.whl.metadata (2.9 kB)
+Collecting tinycss2>=1.4.0 (from weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached tinycss2-1.4.0-py3-none-any.whl.metadata (3.0 kB)
+Collecting cssselect2>=0.8.0 (from weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached cssselect2-0.8.0-py3-none-any.whl.metadata (2.9 kB)
+Collecting Pyphen>=0.9.1 (from weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached pyphen-0.17.2-py3-none-any.whl.metadata (3.2 kB)
+Collecting Pillow>=9.1.0 (from weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached pillow-11.2.1-cp311-cp311-manylinux\_2\_28\_x86\_64.whl.metadata (8.9 kB)
+Collecting fonttools>=4.0.0 (from fonttools\[woff]>=4.0.0->weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached fonttools-4.57.0-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl.metadata (102 kB)
+Collecting pycparser (from cffi>=0.6->weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached pycparser-2.22-py3-none-any.whl.metadata (943 bytes)
+Collecting webencodings (from cssselect2>=0.8.0->weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached webencodings-0.5.1-py2.py3-none-any.whl.metadata (2.1 kB)
+Collecting brotli>=1.0.1 (from fonttools\[woff]>=4.0.0->weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached Brotli-1.1.0-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl.metadata (5.5 kB)
+Collecting zopfli>=0.1.4 (from fonttools\[woff]>=4.0.0->weasyprint>=65.1->-r requirements.txt (line 11))
+Using cached zopfli-0.2.3.post1-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl.metadata (2.9 kB)
+Collecting MarkupSafe>=2.0 (from Jinja2>=3.1.2->flask>=3.1.0->-r requirements.txt (line 3))
+Using cached MarkupSafe-3.0.2-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl.metadata (4.0 kB)
+Collecting greenlet>=1 (from sqlalchemy>=2.0.16->flask-sqlalchemy>=3.1.1->-r requirements.txt (line 4))
+Using cached greenlet-3.2.1-cp311-cp311-manylinux\_2\_24\_x86\_64.manylinux\_2\_28\_x86\_64.whl.metadata (4.1 kB)
+Using cached email\_validator-2.2.0-py3-none-any.whl (33 kB)
+Using cached Flask\_Login-0.6.3-py3-none-any.whl (17 kB)
+Using cached flask-3.1.0-py3-none-any.whl (102 kB)
+Using cached flask\_sqlalchemy-3.1.1-py3-none-any.whl (25 kB)
+Using cached gunicorn-23.0.0-py3-none-any.whl (85 kB)
+Using cached psycopg2\_binary-2.9.10-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl (3.0 MB)
+Using cached flask\_wtf-1.2.2-py3-none-any.whl (12 kB)
+Using cached flask\_mail-0.10.0-py3-none-any.whl (8.5 kB)
+Using cached requests-2.32.3-py3-none-any.whl (64 kB)
+Using cached stripe-12.1.0-py2.py3-none-any.whl (1.6 MB)
+Using cached weasyprint-65.1-py3-none-any.whl (298 kB)
+Using cached blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Using cached certifi-2025.4.26-py3-none-any.whl (159 kB)
+Using cached cffi-1.17.1-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl (467 kB)
+Using cached charset\_normalizer-3.4.2-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl (147 kB)
+Using cached click-8.1.8-py3-none-any.whl (98 kB)
+Using cached cssselect2-0.8.0-py3-none-any.whl (15 kB)
+Using cached dnspython-2.7.0-py3-none-any.whl (313 kB)
+Using cached fonttools-4.57.0-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl (4.9 MB)
+Using cached idna-3.10-py3-none-any.whl (70 kB)
+Using cached itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+Using cached pillow-11.2.1-cp311-cp311-manylinux\_2\_28\_x86\_64.whl (4.6 MB)
+Using cached pydyf-0.11.0-py3-none-any.whl (8.1 kB)
+Using cached pyphen-0.17.2-py3-none-any.whl (2.1 MB)
+Using cached sqlalchemy-2.0.40-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl (3.2 MB)
+Using cached tinycss2-1.4.0-py3-none-any.whl (26 kB)
+Using cached tinyhtml5-2.0.0-py3-none-any.whl (39 kB)
+Using cached typing\_extensions-4.13.2-py3-none-any.whl (45 kB)
+Using cached urllib3-2.4.0-py3-none-any.whl (128 kB)
+Using cached werkzeug-3.1.3-py3-none-any.whl (224 kB)
+Using cached packaging-25.0-py3-none-any.whl (66 kB)
+Using cached wtforms-3.2.1-py3-none-any.whl (152 kB)
+Using cached Brotli-1.1.0-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl (2.9 MB)
+Using cached greenlet-3.2.1-cp311-cp311-manylinux\_2\_24\_x86\_64.manylinux\_2\_28\_x86\_64.whl (583 kB)
+Using cached MarkupSafe-3.0.2-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl (23 kB)
+Using cached webencodings-0.5.1-py2.py3-none-any.whl (11 kB)
+Using cached zopfli-0.2.3.post1-cp311-cp311-manylinux\_2\_17\_x86\_64.manylinux2014\_x86\_64.whl (850 kB)
+Using cached pycparser-2.22-py3-none-any.whl (117 kB)
+Installing collected packages: webencodings, brotli, zopfli, urllib3, typing\_extensions, tinyhtml5, tinycss2, Pyphen, pydyf, pycparser, psycopg2-binary, Pillow, packaging, MarkupSafe, itsdangerous, idna, greenlet, fonttools, dnspython, click, charset-normalizer, certifi, blinker, wtforms, Werkzeug, sqlalchemy, requests, Jinja2, gunicorn, email-validator, cssselect2, cffi, weasyprint, stripe, flask, flask-wtf, flask-sqlalchemy, flask-mail, flask-login
+Successfully installed Jinja2-3.1.6 MarkupSafe-3.0.2 Pillow-11.2.1 Pyphen-0.17.2 Werkzeug-3.1.3 blinker-1.9.0 brotli-1.1.0 certifi-2025.4.26 cffi-1.17.1 charset-normalizer-3.4.2 click-8.1.8 cssselect2-0.8.0 dnspython-2.7.0 email-validator-2.2.0 flask-3.1.0 flask-login-0.6.3 flask-mail-0.10.0 flask-sqlalchemy-3.1.1 flask-wtf-1.2.2 fonttools-4.57.0 greenlet-3.2.1 gunicorn-23.0.0 idna-3.10 itsdangerous-2.2.0 packaging-25.0 psycopg2-binary-2.9.10 pycparser-2.22 pydyf-0.11.0 requests-2.32.3 sqlalchemy-2.0.40 stripe-12.1.0 tinycss2-1.4.0 tinyhtml5-2.0.0 typing\_extensions-4.13.2 urllib3-2.4.0 weasyprint-65.1 webencodings-0.5.1 wtforms-3.2.1 zopfli-0.2.3.post1
+\[notice] A new release of pip is available: 24.0 -> 25.1.1
+\[notice] To update, run: pip install --upgrade pip
+\==> Uploading build...
+\==> Uploaded in 4.4s. Compression took 1.2s
+\==> Build successful 🎉
+\==> Deploying...
+\==> Running 'gunicorn app\:app'
+INFO\:root\:Created super admin user
+ERROR\:app\:Error updating schema: (sqlite3.OperationalError) near "EXISTS": syntax error
+\[SQL: ALTER TABLE course
+ADD COLUMN IF NOT EXISTS payment\_methods VARCHAR(255) DEFAULT 'stripe,sslcommerz,manual',
+ADD COLUMN IF NOT EXISTS allow\_bkash BOOLEAN DEFAULT TRUE,
+ADD COLUMN IF NOT EXISTS allow\_nagad BOOLEAN DEFAULT TRUE,
+ADD COLUMN IF NOT EXISTS allow\_rocket BOOLEAN DEFAULT TRUE,
+ADD COLUMN IF NOT EXISTS allow\_cards BOOLEAN DEFAULT TRUE;
+]
+(Background on this error at: [https://sqlalche.me/e/20/e3q8](https://sqlalche.me/e/20/e3q8))
+\[2025-05-05 09:24:40 +0000] \[84] \[INFO] Starting gunicorn 23.0.0
+\[2025-05-05 09:24:40 +0000] \[84] \[INFO] Listening at: [http://0.0.0.0:10000](http://0.0.0.0:10000) (84)
+\[2025-05-05 09:24:40 +0000] \[84] \[INFO] Using worker: sync
+\[2025-05-05 09:24:40 +0000] \[141] \[INFO] Booting worker with pid: 141
+ERROR\:app\:Exception on / \[HEAD]
+Traceback (most recent call last):
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 1511, in wsgi\_app
+response = self.full\_dispatch\_request()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 919, in full\_dispatch\_request
+rv = self.handle\_user\_exception(e)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 917, in full\_dispatch\_request
+rv = self.dispatch\_request()
+^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 902, in dispatch\_request
+return self.ensure\_sync(self.view\_functions\[rule.endpoint])(\*\*view\_args)  # type: ignore\[no-any-return]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/routes/public.py", line 18, in index
+return render\_template('index.html',
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/templating.py", line 150, in render\_template
+return \_render(app, template, context)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/templating.py", line 131, in \_render
+rv = template.render(context)
+^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/jinja2/environment.py", line 1295, in render
+self.environment.handle\_exception()
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/jinja2/environment.py", line 942, in handle\_exception
+raise rewrite\_traceback\_stack(source=source)
+File "/opt/render/project/src/templates/index.html", line 1, in top-level template code
+{% extends "layout.html" %}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/templates/layout.html", line 7, in top-level template code <meta name="csrf-token" content="{{ csrf_token() }}">
+^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask\_wtf/csrf.py", line 36, in generate\_csrf
+secret\_key = \_get\_config(
+^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask\_wtf/csrf.py", line 136, in \_get\_config
+raise RuntimeError(message)
+RuntimeError: A secret key is required to use CSRF.
+127.0.0.1 - - \[05/May/2025:09:24:40 +0000] "HEAD / HTTP/1.1" 500 0 "-" "Go-http-client/1.1"
+\==> Your service is live 🎉
+ERROR\:app\:Exception on / \[GET]
+10.220.86.209 - - \[05/May/2025:09:24:46 +0000] "GET / HTTP/1.1" 500 265 "-" "Go-http-client/2.0"
+Traceback (most recent call last):
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 1511, in wsgi\_app
+response = self.full\_dispatch\_request()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 919, in full\_dispatch\_request
+rv = self.handle\_user\_exception(e)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 917, in full\_dispatch\_request
+rv = self.dispatch\_request()
+^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 902, in dispatch\_request
+return self.ensure\_sync(self.view\_functions\[rule.endpoint])(\*\*view\_args)  # type: ignore\[no-any-return]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/routes/public.py", line 18, in index
+return render\_template('index.html',
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/templating.py", line 150, in render\_template
+return \_render(app, template, context)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/templating.py", line 131, in \_render
+rv = template.render(context)
+^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/jinja2/environment.py", line 1295, in render
+self.environment.handle\_exception()
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/jinja2/environment.py", line 942, in handle\_exception
+raise rewrite\_traceback\_stack(source=source)
+File "/opt/render/project/src/templates/index.html", line 1, in top-level template code
+{% extends "layout.html" %}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/templates/layout.html", line 7, in top-level template code <meta name="csrf-token" content="{{ csrf_token() }}">
+^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask\_wtf/csrf.py", line 36, in generate\_csrf
+secret\_key = \_get\_config(
+^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask\_wtf/csrf.py", line 136, in \_get\_config
+raise RuntimeError(message)
+RuntimeError: A secret key is required to use CSRF.
+\==> Detected service running on port 10000
+\==> Docs on specifying a port: [https://render.com/docs/web-services#port-binding](https://render.com/docs/web-services#port-binding)
+ERROR\:app\:Exception on / \[GET]
+Traceback (most recent call last):
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 1511, in wsgi\_app
+response = self.full\_dispatch\_request()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 919, in full\_dispatch\_request
+rv = self.handle\_user\_exception(e)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 917, in full\_dispatch\_request
+rv = self.dispatch\_request()
+^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 902, in dispatch\_request
+return self.ensure\_sync(self.view\_functions\[rule.endpoint])(\*\*view\_args)  # type: ignore\[no-any-return]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/routes/public.py", line 18, in index
+return render\_template('index.html',
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/templating.py", line 150, in render\_template
+return \_render(app, template, context)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/templating.py", line 131, in \_render
+rv = template.render(context)
+^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/jinja2/environment.py", line 1295, in render
+self.environment.handle\_exception()
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/jinja2/environment.py", line 942, in handle\_exception
+raise rewrite\_traceback\_stack(source=source)
+File "/opt/render/project/src/templates/index.html", line 1, in top-level template code
+{% extends "layout.html" %}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/templates/layout.html", line 7, in top-level template code <meta name="csrf-token" content="{{ csrf_token() }}">
+^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask\_wtf/csrf.py", line 36, in generate\_csrf
+secret\_key = \_get\_config(
+^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask\_wtf/csrf.py", line 136, in \_get\_config
+raise RuntimeError(message)
+RuntimeError: A secret key is required to use CSRF.
+10.220.179.143 - - \[05/May/2025:09:33:14 +0000] "GET / HTTP/1.1" 500 265 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+10.220.161.194 - - \[05/May/2025:09:33:14 +0000] "GET /favicon.ico HTTP/1.1" 404 207 "[https://insight-sphere.onrender.com/](https://insight-sphere.onrender.com/)" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+ERROR\:app\:Exception on / \[GET]
+Traceback (most recent call last):
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 1511, in wsgi\_app
+response = self.full\_dispatch\_request()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 919, in full\_dispatch\_request
+rv = self.handle\_user\_exception(e)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 917, in full\_dispatch\_request
+rv = self.dispatch\_request()
+^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/app.py", line 902, in dispatch\_request
+return self.ensure\_sync(self.view\_functions\[rule.endpoint])(\*\*view\_args)  # type: ignore\[no-any-return]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/routes/public.py", line 18, in index
+return render\_template('index.html',
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/templating.py", line 150, in render\_template
+return \_render(app, template, context)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask/templating.py", line 131, in \_render
+rv = template.render(context)
+^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/jinja2/environment.py", line 1295, in render
+self.environment.handle\_exception()
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/jinja2/environment.py", line 942, in handle\_exception
+raise rewrite\_traceback\_stack(source=source)
+File "/opt/render/project/src/templates/index.html", line 1, in top-level template code
+{% extends "layout.html" %}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/templates/layout.html", line 7, in top-level template code <meta name="csrf-token" content="{{ csrf_token() }}">
+^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask\_wtf/csrf.py", line 36, in generate\_csrf
+secret\_key = \_get\_config(
+^^^^^^^^^^^^
+File "/opt/render/project/src/.venv/lib/python3.11/site-packages/flask\_wtf/csrf.py", line 136, in \_get\_config
+raise RuntimeError(message)
+RuntimeError: A secret key is required to use CSRF.
+10.220.203.77 - - \[05/May/2025:09:33:18 +0000] "GET / HTTP/1.1" 500 265 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36" what does it mean and how to solve it in render
