@@ -597,6 +597,17 @@ def consultant_edit(consultant_id):
 
 @admin_bp.route('/consultants/delete/<int:consultant_id>', methods=['POST'])
 @admin_required
+def consultant_delete(consultant_id):
+    consultant = User.query.get_or_404(consultant_id)
+
+    if not consultant.is_consultant:
+        abort(404)
+
+    consultant.is_consultant = False
+    db.session.commit()
+    flash('Consultant removed successfully!', 'success')
+    return redirect(url_for('admin.consultant_manager'))
+
 @admin_bp.route('/consultants/<int:consultant_id>/cv')
 @admin_required
 def download_cv(consultant_id):
@@ -607,8 +618,6 @@ def download_cv(consultant_id):
         os.path.join(current_app.config['UPLOAD_FOLDER'], 'consultants'),
         consultant.cv_filename
     )
-
-def consultant_delete(consultant_id):
     consultant = User.query.get_or_404(consultant_id)
 
     if not consultant.is_consultant:
