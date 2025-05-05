@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import (StringField, PasswordField, BooleanField, SubmitField, 
                     TextAreaField, SelectField, IntegerField, FloatField, 
                     DateTimeField, HiddenField, FileField, URLField)
-from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, URL
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, URL, FileAllowed
 from datetime import datetime
 
 # Authentication Forms
@@ -41,13 +41,13 @@ class CourseForm(FlaskForm):
     session_link = URLField('Session Link (Zoom, Meet, etc.)', validators=[Optional(), URL()])
     is_published = BooleanField('Published?', default=False)
     registration_open = BooleanField('Registration Open?', default=True)
-    
+
     # Payment method options
     allow_bkash = BooleanField('Allow bKash', default=True)
     allow_nagad = BooleanField('Allow Nagad', default=True)
     allow_rocket = BooleanField('Allow Rocket (DBBL)', default=True)
     allow_cards = BooleanField('Allow Credit/Debit Cards', default=True)
-    
+
     submit = SubmitField('Save Course')
 
 class CourseVideoForm(FlaskForm):
@@ -99,8 +99,8 @@ class ConsultantForm(FlaskForm):
     password = PasswordField('Password', validators=[Length(min=6)])
     bio = TextAreaField('Biography', validators=[DataRequired()])
     position = StringField('Position/Title', validators=[DataRequired(), Length(max=100)])
-    photo = FileField('Profile Photo', validators=[Optional()])
-    cv = FileField('CV/Resume (PDF)', validators=[Optional()])
+    photo = FileField('Profile Photo', validators=[Optional(), FileAllowed(['jpg', 'png'], 'Images only!')])
+    cv = FileField('CV/Resume (PDF)', validators=[Optional(), FileAllowed(['pdf'], 'PDF files only!')])
     submit = SubmitField('Save Consultant')
 
 class CertificateTemplateForm(FlaskForm):

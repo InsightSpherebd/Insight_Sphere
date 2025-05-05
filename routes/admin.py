@@ -4,6 +4,7 @@ from sqlalchemy import desc
 from app import db
 from werkzeug.utils import secure_filename
 import os
+import time
 from models import (User, Course, CourseVideo, CourseMaterial, 
                    SiteContent, Certificate, CertificateTemplate,
                    Payment, registrations)
@@ -54,7 +55,7 @@ def dashboard():
     ).order_by(
         desc(registrations.c.registration_date)
     ).limit(5).all()
-    
+
     return render_template('admin/dashboard.html',
                          title='Admin Dashboard',
                          course_count=course_count,
@@ -70,7 +71,7 @@ def content_editor():
     hero_content = SiteContent.query.filter_by(section='hero').order_by(SiteContent.order).all()
     about_content = SiteContent.query.filter_by(section='about').order_by(SiteContent.order).all()
     mission_vision = SiteContent.query.filter_by(section='mission_vision').first()
-    
+
     return render_template('admin/content_editor.html',
                          title='Content Editor',
                          hero_content=hero_content,
@@ -95,7 +96,7 @@ def content_add():
         db.session.commit()
         flash('Content added successfully!', 'success')
         return redirect(url_for('admin.content_editor'))
-    
+
     return render_template('admin/content_form.html',
                          title='Add Content',
                          form=form)
@@ -105,7 +106,7 @@ def content_add():
 def content_edit(content_id):
     content = SiteContent.query.get_or_404(content_id)
     form = SiteContentForm(obj=content)
-    
+
     if form.validate_on_submit():
         content.section = form.section.data
         content.title = form.title.data
@@ -114,11 +115,11 @@ def content_edit(content_id):
         content.order = form.order.data
         content.is_published = form.is_published.data
         content.editor_id = current_user.id
-        
+
         db.session.commit()
         flash('Content updated successfully!', 'success')
         return redirect(url_for('admin.content_editor'))
-    
+
     return render_template('admin/content_form.html',
                          title='Edit Content',
                          form=form)
@@ -168,7 +169,7 @@ def course_add():
         db.session.commit()
         flash('Course added successfully!', 'success')
         return redirect(url_for('admin.course_manager'))
-    
+
     return render_template('admin/course_form.html',
                          title='Add Course',
                          form=form)
@@ -178,7 +179,7 @@ def course_add():
 def course_edit(course_id):
     course = Course.query.get_or_404(course_id)
     form = CourseForm(obj=course)
-    
+
     if form.validate_on_submit():
         course.title = form.title.data
         course.description = form.description.data
@@ -195,11 +196,11 @@ def course_edit(course_id):
         course.allow_nagad = form.allow_nagad.data
         course.allow_rocket = form.allow_rocket.data
         course.allow_cards = form.allow_cards.data
-        
+
         db.session.commit()
         flash('Course updated successfully!', 'success')
         return redirect(url_for('admin.course_manager'))
-    
+
     return render_template('admin/course_form.html',
                          title='Edit Course',
                          form=form,
@@ -220,7 +221,7 @@ def course_delete(course_id):
 def course_videos(course_id):
     course = Course.query.get_or_404(course_id)
     videos = CourseVideo.query.filter_by(course_id=course_id).order_by(CourseVideo.order).all()
-    
+
     return render_template('admin/course_videos.html',
                          title=f'Videos for {course.title}',
                          course=course,
@@ -231,7 +232,7 @@ def course_videos(course_id):
 def course_video_add(course_id):
     course = Course.query.get_or_404(course_id)
     form = CourseVideoForm()
-    
+
     if form.validate_on_submit():
         video = CourseVideo(
             course_id=course_id,
@@ -247,7 +248,7 @@ def course_video_add(course_id):
         db.session.commit()
         flash('Video added successfully!', 'success')
         return redirect(url_for('admin.course_videos', course_id=course_id))
-    
+
     return render_template('admin/course_video_form.html',
                          title=f'Add Video to {course.title}',
                          form=form,
@@ -259,7 +260,7 @@ def course_video_edit(video_id):
     video = CourseVideo.query.get_or_404(video_id)
     course = Course.query.get_or_404(video.course_id)
     form = CourseVideoForm(obj=video)
-    
+
     if form.validate_on_submit():
         video.title = form.title.data
         video.description = form.description.data
@@ -268,11 +269,11 @@ def course_video_edit(video_id):
         video.order = form.order.data
         video.duration = form.duration.data
         video.is_published = form.is_published.data
-        
+
         db.session.commit()
         flash('Video updated successfully!', 'success')
         return redirect(url_for('admin.course_videos', course_id=course.id))
-    
+
     return render_template('admin/course_video_form.html',
                          title=f'Edit Video for {course.title}',
                          form=form,
@@ -295,7 +296,7 @@ def course_video_delete(video_id):
 def course_materials(course_id):
     course = Course.query.get_or_404(course_id)
     materials = CourseMaterial.query.filter_by(course_id=course_id).order_by(CourseMaterial.order).all()
-    
+
     return render_template('admin/course_materials.html',
                          title=f'Materials for {course.title}',
                          course=course,
@@ -306,7 +307,7 @@ def course_materials(course_id):
 def course_material_add(course_id):
     course = Course.query.get_or_404(course_id)
     form = CourseMaterialForm()
-    
+
     if form.validate_on_submit():
         material = CourseMaterial(
             course_id=course_id,
@@ -321,7 +322,7 @@ def course_material_add(course_id):
         db.session.commit()
         flash('Material added successfully!', 'success')
         return redirect(url_for('admin.course_materials', course_id=course_id))
-    
+
     return render_template('admin/course_material_form.html',
                          title=f'Add Material to {course.title}',
                          form=form,
@@ -333,7 +334,7 @@ def course_material_edit(material_id):
     material = CourseMaterial.query.get_or_404(material_id)
     course = Course.query.get_or_404(material.course_id)
     form = CourseMaterialForm(obj=material)
-    
+
     if form.validate_on_submit():
         material.title = form.title.data
         material.description = form.description.data
@@ -341,11 +342,11 @@ def course_material_edit(material_id):
         material.file_url = form.file_url.data
         material.order = form.order.data
         material.is_published = form.is_published.data
-        
+
         db.session.commit()
         flash('Material updated successfully!', 'success')
         return redirect(url_for('admin.course_materials', course_id=course.id))
-    
+
     return render_template('admin/course_material_form.html',
                          title=f'Edit Material for {course.title}',
                          form=form,
@@ -367,7 +368,7 @@ def course_material_delete(material_id):
 @admin_required
 def course_participants(course_id):
     course = Course.query.get_or_404(course_id)
-    
+
     # Get participants with registration data
     participants = db.session.query(
         User, registrations
@@ -376,7 +377,7 @@ def course_participants(course_id):
     ).filter(
         registrations.c.course_id == course_id
     ).all()
-    
+
     return render_template('admin/participants.html',
                          title=f'Participants for {course.title}',
                          course=course,
@@ -386,7 +387,7 @@ def course_participants(course_id):
 @admin_required
 def export_participants(course_id):
     course = Course.query.get_or_404(course_id)
-    
+
     # Get participants data
     participants = db.session.query(
         User, registrations
@@ -395,15 +396,15 @@ def export_participants(course_id):
     ).filter(
         registrations.c.course_id == course_id
     ).all()
-    
+
     # Create CSV in memory
     output = io.StringIO()
     writer = csv.writer(output)
-    
+
     # Write header
     writer.writerow(['Full Name', 'Email', 'Phone', 'Registration Date', 
                     'Payment Status', 'Completion Status'])
-    
+
     # Write participant data
     for user, reg in participants:
         writer.writerow([
@@ -414,12 +415,12 @@ def export_participants(course_id):
             reg.payment_status,
             'Completed' if reg.completion_status else 'Not Completed'
         ])
-    
+
     # Prepare response
     from flask import Response
     output.seek(0)
     filename = f"{course.title.replace(' ', '_')}_participants_{datetime.datetime.now().strftime('%Y%m%d')}.csv"
-    
+
     return Response(
         output.getvalue(),
         mimetype='text/csv',
@@ -432,19 +433,19 @@ def update_participant_status():
     user_id = request.form.get('user_id', type=int)
     course_id = request.form.get('course_id', type=int)
     completion_status = request.form.get('completion_status') == 'true'
-    
+
     if not user_id or not course_id:
         return jsonify({'success': False, 'message': 'Invalid request'}), 400
-    
+
     # Update completion status in registrations table
     stmt = registrations.update().where(
         (registrations.c.user_id == user_id) & 
         (registrations.c.course_id == course_id)
     ).values(completion_status=completion_status)
-    
+
     db.session.execute(stmt)
     db.session.commit()
-    
+
     # If marked as completed, prepare for certificate generation
     if completion_status:
         return jsonify({
@@ -454,7 +455,7 @@ def update_participant_status():
             'user_id': user_id,
             'course_id': course_id
         })
-    
+
     return jsonify({'success': True, 'message': 'Status updated successfully'})
 
 @admin_bp.route('/certificate/generate', methods=['POST'])
@@ -463,34 +464,34 @@ def generate_certificate():
     user_id = request.form.get('user_id', type=int)
     course_id = request.form.get('course_id', type=int)
     template_id = request.form.get('template_id', type=int)
-    
+
     if not user_id or not course_id:
         return jsonify({'success': False, 'message': 'Invalid request'}), 400
-    
+
     # Generate certificate
     certificate = CertificateGenerator.generate_certificate(user_id, course_id, template_id)
-    
+
     if certificate:
         # Update certificate_issued status in registrations table
         stmt = registrations.update().where(
             (registrations.c.user_id == user_id) & 
             (registrations.c.course_id == course_id)
         ).values(certificate_issued=True)
-        
+
         db.session.execute(stmt)
         db.session.commit()
-        
+
         # Send certificate email
         from utils.email_service import EmailService
         user = User.query.get(user_id)
         EmailService.send_certificate(user, certificate)
-        
+
         return jsonify({
             'success': True, 
             'message': 'Certificate generated and sent successfully',
             'certificate_url': certificate.pdf_url
         })
-    
+
     return jsonify({'success': False, 'message': 'Failed to generate certificate'})
 
 # Consultant Management
@@ -506,7 +507,7 @@ def consultant_manager():
 @admin_required
 def consultant_add():
     form = ConsultantForm()
-    
+
     def save_file(file, consultant_id, file_type):
         if not file:
             return None
@@ -516,11 +517,11 @@ def consultant_add():
         file_path = os.path.join(upload_dir, filename)
         file.save(file_path)
         return filename
-    
+
     # Populate user_id choices with existing admins
     admins = User.query.filter(User.role.in_(['admin', 'super_admin'])).all()
     form.user_id.choices = [(0, 'Create New User')] + [(u.id, f"{u.full_name} ({u.email})") for u in admins]
-    
+
     if form.validate_on_submit():
         if form.user_id.data > 0:
             # Use existing user
@@ -537,16 +538,16 @@ def consultant_add():
             )
             consultant.set_password(form.password.data)
             db.session.add(consultant)
-        
+
         # Update consultant info
         consultant.bio = form.bio.data
         consultant.position = form.position.data
         consultant.photo_url = form.photo_url.data
-        
+
         db.session.commit()
         flash('Consultant added successfully!', 'success')
         return redirect(url_for('admin.consultant_manager'))
-    
+
     return render_template('admin/consultant_form.html',
                          title='Add Consultant',
                          form=form)
@@ -555,32 +556,40 @@ def consultant_add():
 @admin_required
 def consultant_edit(consultant_id):
     consultant = User.query.get_or_404(consultant_id)
-    
+
     if not consultant.is_consultant:
         abort(404)
-    
+
     form = ConsultantForm(obj=consultant)
     form.user_id.choices = [(consultant.id, f"{consultant.full_name} ({consultant.email})")]
     form.user_id.data = consultant.id
-    
+
     # Don't require password for edit
     form.password.validators = []
-    
+
     if form.validate_on_submit():
         consultant.full_name = form.full_name.data
         consultant.email = form.email.data
         consultant.bio = form.bio.data
         consultant.position = form.position.data
-        consultant.photo_url = form.photo_url.data
-        
-        # Update password if provided
-        if form.password.data:
-            consultant.set_password(form.password.data)
-        
+        consultant.is_consultant = True
+
+        if form.photo.data:
+            photo_file = form.photo.data
+            photo_filename = secure_filename(f"{consultant.id}_photo_{int(time.time())}{os.path.splitext(photo_file.filename)[1]}")
+            photo_file.save(os.path.join('static/uploads/consultants', photo_filename))
+            consultant.photo_filename = photo_filename
+
+        if form.cv.data:
+            cv_file = form.cv.data
+            cv_filename = secure_filename(f"{consultant.id}_cv_{int(time.time())}.pdf")
+            cv_file.save(os.path.join('static/uploads/consultants', cv_filename))
+            consultant.cv_filename = cv_filename
+
         db.session.commit()
-        flash('Consultant updated successfully!', 'success')
+        flash('Consultant updated successfully', 'success')
         return redirect(url_for('admin.consultant_manager'))
-    
+
     return render_template('admin/consultant_form.html',
                          title='Edit Consultant',
                          form=form,
@@ -601,10 +610,10 @@ def download_cv(consultant_id):
 
 def consultant_delete(consultant_id):
     consultant = User.query.get_or_404(consultant_id)
-    
+
     if not consultant.is_consultant:
         abort(404)
-    
+
     consultant.is_consultant = False
     db.session.commit()
     flash('Consultant removed successfully!', 'success')
@@ -623,7 +632,7 @@ def certificate_templates():
 @admin_required
 def certificate_template_add():
     form = CertificateTemplateForm()
-    
+
     if form.validate_on_submit():
         template = CertificateTemplate(
             name=form.name.data,
@@ -632,20 +641,20 @@ def certificate_template_add():
             is_default=form.is_default.data,
             created_by=current_user.id
         )
-        
+
         # If this is default, unset other defaults
         if template.is_default:
             CertificateTemplate.query.filter_by(is_default=True).update({'is_default': False})
-        
+
         db.session.add(template)
         db.session.commit()
         flash('Certificate template added successfully!', 'success')
         return redirect(url_for('admin.certificate_templates'))
-    
+
     # Populate with default template HTML
     if not form.html_template.data:
         form.html_template.data = CertificateGenerator.get_default_template_html()
-    
+
     return render_template('admin/certificate_template_form.html',
                          title='Add Certificate Template',
                          form=form)
@@ -655,12 +664,12 @@ def certificate_template_add():
 def certificate_template_edit(template_id):
     template = CertificateTemplate.query.get_or_404(template_id)
     form = CertificateTemplateForm(obj=template)
-    
+
     if form.validate_on_submit():
         template.name = form.name.data
         template.background_url = form.background_url.data
         template.html_template = form.html_template.data
-        
+
         # Handle default status
         if form.is_default.data and not template.is_default:
             CertificateTemplate.query.filter_by(is_default=True).update({'is_default': False})
@@ -672,11 +681,11 @@ def certificate_template_edit(template_id):
             else:
                 flash('Cannot remove default status from the only template.', 'warning')
                 template.is_default = True
-        
+
         db.session.commit()
         flash('Certificate template updated successfully!', 'success')
         return redirect(url_for('admin.certificate_templates'))
-    
+
     return render_template('admin/certificate_template_form.html',
                          title='Edit Certificate Template',
                          form=form,
@@ -686,18 +695,18 @@ def certificate_template_edit(template_id):
 @admin_required
 def certificate_template_delete(template_id):
     template = CertificateTemplate.query.get_or_404(template_id)
-    
+
     # Don't allow deleting the default template if it's the only one
     if template.is_default and CertificateTemplate.query.count() == 1:
         flash('Cannot delete the only template.', 'danger')
         return redirect(url_for('admin.certificate_templates'))
-    
+
     # If deleting default, set another one as default
     if template.is_default:
         new_default = CertificateTemplate.query.filter(CertificateTemplate.id != template_id).first()
         if new_default:
             new_default.is_default = True
-    
+
     db.session.delete(template)
     db.session.commit()
     flash('Certificate template deleted successfully!', 'success')
@@ -716,21 +725,21 @@ def user_manager():
 @super_admin_required
 def user_edit(user_id):
     user = User.query.get_or_404(user_id)
-    
+
     if request.method == 'POST':
         # Update user role
         role = request.form.get('role')
         if role in ['user', 'admin', 'super_admin', 'consultant']:
             user.role = role
-            
+
             # Update consultant status based on role
             user.is_consultant = (role == 'consultant')
-            
+
             db.session.commit()
             flash('User role updated successfully!', 'success')
-        
+
         return redirect(url_for('admin.user_manager'))
-    
+
     return render_template('admin/user_edit.html',
                          title='Edit User',
                          user=user)
@@ -739,12 +748,12 @@ def user_edit(user_id):
 @super_admin_required
 def user_delete(user_id):
     user = User.query.get_or_404(user_id)
-    
+
     # Can't delete yourself
     if user.id == current_user.id:
         flash('You cannot delete your own account.', 'danger')
         return redirect(url_for('admin.user_manager'))
-    
+
     # Delete user
     db.session.delete(user)
     db.session.commit()
@@ -761,10 +770,10 @@ def file_manager():
     if '..' in path or path.startswith('/'):
         flash('Invalid path specified.', 'danger')
         path = '.'
-        
+
     files = []
     directories = []
-    
+
     # Get list of files and directories
     try:
         for item in os.listdir(path):
@@ -787,11 +796,11 @@ def file_manager():
         path = '.'
         directories = []
         files = []
-    
+
     # Sort alphabetically
     directories.sort(key=lambda x: x['name'])
     files.sort(key=lambda x: x['name'])
-    
+
     return render_template('admin/file_manager.html',
                         title='File Manager',
                         current_path=path,
@@ -802,25 +811,25 @@ def file_manager():
 @super_admin_required
 def file_edit():
     path = request.args.get('path', '')
-    
+
     # Security check to prevent directory traversal attacks
     if '..' in path or path.startswith('/'):
         flash('Invalid path specified.', 'danger')
         return redirect(url_for('admin.file_manager'))
-    
-    if request.method == 'POST':
+
+    if request.method == 'POST:
         content = request.form.get('content', '')
-        
+
         try:
             with open(path, 'w') as f:
                 f.write(content)
             flash('File saved successfully!', 'success')
         except Exception as e:
             flash(f'Error saving file: {str(e)}', 'danger')
-        
+
         # Redirect back to the same page to clear POST data
         return redirect(url_for('admin.file_edit', path=path))
-    
+
     # Get file content for GET request
     try:
         with open(path, 'r') as f:
@@ -828,7 +837,7 @@ def file_edit():
     except Exception as e:
         flash(f'Error reading file: {str(e)}', 'danger')
         return redirect(url_for('admin.file_manager'))
-    
+
     return render_template('admin/file_edit.html',
                          title=f'Edit File: {os.path.basename(path)}',
                          path=path,

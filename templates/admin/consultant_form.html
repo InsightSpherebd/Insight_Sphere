@@ -1,134 +1,79 @@
 {% extends "admin/layout.html" %}
 
 {% block content %}
-<div class="card">
-    <div class="card-content">
-        <h1>{{ 'Edit' if consultant else 'Add' }} Consultant</h1>
-        
-        <form method="post" action="" novalidate>
-            {{ form.hidden_tag() }}
-            
-            {% if not consultant %}
-                <div class="form-group">
-                    {{ form.user_id.label(class="form-label") }}
-                    {{ form.user_id(class="form-control") }}
-                    <small class="form-text text-muted">Select an existing user or create a new one</small>
-                    {% if form.user_id.errors %}
-                        {% for error in form.user_id.errors %}
-                        <span class="form-text text-danger">{{ error }}</span>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            {% endif %}
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {{ form.full_name.label(class="form-label") }}
-                        {{ form.full_name(class="form-control") }}
-                        {% if form.full_name.errors %}
-                            {% for error in form.full_name.errors %}
-                            <span class="form-text text-danger">{{ error }}</span>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {{ form.email.label(class="form-label") }}
-                        {{ form.email(class="form-control") }}
-                        {% if form.email.errors %}
-                            {% for error in form.email.errors %}
-                            <span class="form-text text-danger">{{ error }}</span>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            
-            {% if not consultant %}
-                <div class="form-group">
-                    {{ form.password.label(class="form-label") }}
-                    {{ form.password(class="form-control") }}
-                    <small class="form-text text-muted">Required for new users</small>
-                    {% if form.password.errors %}
-                        {% for error in form.password.errors %}
-                        <span class="form-text text-danger">{{ error }}</span>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            {% else %}
-                <div class="form-group">
-                    {{ form.password.label(class="form-label") }}
-                    {{ form.password(class="form-control") }}
-                    <small class="form-text text-muted">Leave blank to keep current password</small>
-                    {% if form.password.errors %}
-                        {% for error in form.password.errors %}
-                        <span class="form-text text-danger">{{ error }}</span>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            {% endif %}
-            
-            <div class="form-group">
-                {{ form.position.label(class="form-label") }}
-                {{ form.position(class="form-control") }}
-                <small class="form-text text-muted">e.g., "Senior Industrial Engineer", "Operations Consultant"</small>
-                {% if form.position.errors %}
-                    {% for error in form.position.errors %}
-                    <span class="form-text text-danger">{{ error }}</span>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ form.bio.label(class="form-label") }}
-                {{ form.bio(class="form-control editor", rows=8) }}
-                {% if form.bio.errors %}
-                    {% for error in form.bio.errors %}
-                    <span class="form-text text-danger">{{ error }}</span>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ form.photo.label(class="form-label") }}
-                {{ form.photo(class="form-control") }}
-                <small class="form-text text-muted">Upload profile photo (JPG, PNG)</small>
-                {% if form.photo.errors %}
-                    {% for error in form.photo.errors %}
-                    <span class="form-text text-danger">{{ error }}</span>
-                    {% endfor %}
-                {% endif %}
-            </div>
+<div class="container">
+    <h2>{{ 'Edit' if consultant else 'Add' }} Consultant</h2>
 
-            <div class="form-group mt-3">
-                {{ form.cv.label(class="form-label") }}
-                {{ form.cv(class="form-control") }}
-                <small class="form-text text-muted">Upload CV/Resume (PDF format)</small>
-                {% if form.cv.errors %}
-                    {% for error in form.cv.errors %}
-                    <span class="form-text text-danger">{{ error }}</span>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            
-            {% if consultant and consultant.photo_url %}
-                <div class="form-group mt-3 mb-3">
-                    <label>Current Photo:</label>
-                    <div>
-                        <img src="{{ consultant.photo_url }}" alt="{{ consultant.full_name }}" style="max-width: 150px; max-height: 150px;">
-                    </div>
+    <form method="post" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+
+        <div class="form-group">
+            {{ form.full_name.label(class="form-label") }}
+            {{ form.full_name(class="form-control") }}
+            {% if form.full_name.errors %}
+                {% for error in form.full_name.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.position.label(class="form-label") }}
+            {{ form.position(class="form-control") }}
+            {% if form.position.errors %}
+                {% for error in form.position.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.bio.label(class="form-label") }}
+            {{ form.bio(class="form-control", rows="5") }}
+            {% if form.bio.errors %}
+                {% for error in form.bio.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.photo.label(class="form-label") }}
+            {{ form.photo(class="form-control") }}
+            <small class="form-text text-muted">Upload profile photo (JPG, PNG formats accepted)</small>
+            {% if form.photo.errors %}
+                {% for error in form.photo.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+            {% if consultant and consultant.photo_path %}
+                <div class="mt-2">
+                    <img src="{{ consultant.photo_path }}" alt="Current photo" class="img-thumbnail" style="max-height: 100px;">
                 </div>
             {% endif %}
-            
-            <div class="form-group mt-4">
-                {{ form.submit(class="btn btn-primary") }}
-                <a href="{{ url_for('admin.consultant_manager') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
-    </div>
+        </div>
+
+        <div class="form-group">
+            {{ form.cv.label(class="form-label") }}
+            {{ form.cv(class="form-control") }}
+            <small class="form-text text-muted">Upload CV (PDF format recommended)</small>
+            {% if form.cv.errors %}
+                {% for error in form.cv.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+            {% if consultant and consultant.cv_path %}
+                <div class="mt-2">
+                    <a href="{{ consultant.cv_path }}" target="_blank" class="btn btn-sm btn-info">View Current CV</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group mt-4">
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('admin.consultant_manager') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
 </div>
 {% endblock %}
 
