@@ -104,14 +104,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for user, course, registration_info in recent_registrations %}
+                                {% for user, reg in recent_registrations %}
                                     <tr>
                                         <td>{{ user.full_name }} ({{ user.email }})</td>
-                                        <td>{{ course.title }}</td>
-                                        <td>{{ registration_info.registration_date.strftime('%d %b, %Y') if registration_info.registration_date else 'N/A' }}</td>
+                                        <td>{{ reg.course.title }}</td>
+                                        <td>{{ reg.registration_date.strftime('%d %b, %Y') if reg.registration_date else 'N/A' }}</td>
                                         <td>
-                                            <span class="badge bg-{{ 'success' if registration_info.payment_status == 'completed' else 'warning' }}">
-                                                {{ registration_info.payment_status }}
+                                            <span class="badge bg-{{ 'success' if reg.payment_status == 'completed' else 'warning' }}">
+                                                {{ reg.payment_status }}
                                             </span>
                                         </td>
                                         <td>
