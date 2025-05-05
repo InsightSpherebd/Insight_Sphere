@@ -32,7 +32,7 @@ class CourseRegistrationForm(FlaskForm):
 class CourseForm(FlaskForm):
     title = StringField('Course Title', validators=[DataRequired(), Length(max=100)])
     description = TextAreaField('Description', validators=[DataRequired()])
-    date = DateTimeField('Start Date/Time', format='%Y-%m-%d %H:%M', validators=[Optional()])
+    date = DateTimeField('Start Date/Time', format='%Y-%m-%d %H:%M', validators=[Optional()], render_kw={"placeholder": "YYYY-MM-DD HH:MM"})
     duration = StringField('Duration (e.g., "3 days")', validators=[DataRequired(), Length(max=50)])
     fee = FloatField('Fee (0 for free)', default=0.0)
     capacity = IntegerField('Capacity (0 for unlimited)', default=0)

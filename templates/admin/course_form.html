@@ -24,8 +24,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         {{ form.date.label(class="form-label") }}
-                        {{ form.date(class="form-control", type="datetime-local") }}
-                        <small class="form-text text-muted">Format: YYYY-MM-DD HH:MM</small>
+                        {{ form.date(class="form-control") }}
+                        <small class="form-text text-muted">Format: YYYY-MM-DD HH:MM (example: 2025-05-15 14:30)</small>
                         {% if form.date.errors %}
                             {% for error in form.date.errors %}
                             <span class="form-text text-danger">{{ error }}</span>
