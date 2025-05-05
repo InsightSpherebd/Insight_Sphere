@@ -2,7 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import (StringField, PasswordField, BooleanField, SubmitField, 
                     TextAreaField, SelectField, IntegerField, FloatField, 
                     DateTimeField, HiddenField, FileField, URLField)
-from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, URL, FileAllowed
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, URL
+from flask_wtf.file import FileAllowed
 from datetime import datetime
 
 # Authentication Forms
