@@ -46,6 +46,16 @@ def register():
         
     form = RegistrationForm()
     if form.validate_on_submit():
+        # Check if email already exists
+        if User.query.filter_by(email=form.email.data).first():
+            flash('Email address already registered. Please use a different email or login to your account.', 'danger')
+            return render_template('register.html', title='Register', form=form)
+            
+        # Check if username already exists
+        if User.query.filter_by(username=form.username.data).first():
+            flash('Username already taken. Please choose a different username.', 'danger')
+            return render_template('register.html', title='Register', form=form)
+            
         user = User(
             username=form.username.data,
             email=form.email.data,
@@ -55,11 +65,16 @@ def register():
         user.set_password(form.password.data)
         
         # Save user to database
-        db.session.add(user)
-        db.session.commit()
-        
-        flash('Registration successful. You can now log in.', 'success')
-        return redirect(url_for('auth.login'))
+        try:
+            db.session.add(user)
+            db.session.commit()
+            
+            flash('Registration successful. You can now log in.', 'success')
+            return redirect(url_for('auth.login'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Registration failed. Please try again. Error: {str(e)}', 'danger')
+            return render_template('register.html', title='Register', form=form)
         
     return render_template('register.html', title='Register', form=form)
 
