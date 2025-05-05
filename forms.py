@@ -99,7 +99,8 @@ class ConsultantForm(FlaskForm):
     password = PasswordField('Password', validators=[Length(min=6)])
     bio = TextAreaField('Biography', validators=[DataRequired()])
     position = StringField('Position/Title', validators=[DataRequired(), Length(max=100)])
-    photo_url = URLField('Photo URL', validators=[Optional(), URL()])
+    photo = FileField('Profile Photo', validators=[Optional()])
+    cv = FileField('CV/Resume (PDF)', validators=[Optional()])
     submit = SubmitField('Save Consultant')
 
 class CertificateTemplateForm(FlaskForm):

@@ -34,6 +34,9 @@
                                 
                                 <div class="mt-auto">
                                     <a href="{{ url_for('admin.consultant_edit', consultant_id=consultant.id) }}" class="btn btn-primary">Edit</a>
+                                    {% if consultant.cv_filename %}
+                                        <a href="{{ url_for('admin.download_cv', consultant_id=consultant.id) }}" class="btn btn-info" target="_blank">Download CV</a>
+                                    {% endif %}
                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ consultant.id }}">
                                         Remove
                                     </button>

@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, abort, jsonify
+from flask import Blueprint, render_template, redirect, url_for, request, flash, abort, jsonify, send_from_directory
 from flask_login import login_required, current_user
 from sqlalchemy import desc
 from app import db
+from werkzeug.utils import secure_filename
+import os
 from models import (User, Course, CourseVideo, CourseMaterial, 
                    SiteContent, Certificate, CertificateTemplate,
                    Payment, registrations)
@@ -505,6 +507,16 @@ def consultant_manager():
 def consultant_add():
     form = ConsultantForm()
     
+    def save_file(file, consultant_id, file_type):
+        if not file:
+            return None
+        filename = secure_filename(f"{consultant_id}_{file_type}_{file.filename}")
+        upload_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'consultants')
+        os.makedirs(upload_dir, exist_ok=True)
+        file_path = os.path.join(upload_dir, filename)
+        file.save(file_path)
+        return filename
+    
     # Populate user_id choices with existing admins
     admins = User.query.filter(User.role.in_(['admin', 'super_admin'])).all()
     form.user_id.choices = [(0, 'Create New User')] + [(u.id, f"{u.full_name} ({u.email})") for u in admins]
@@ -576,6 +588,17 @@ def consultant_edit(consultant_id):
 
 @admin_bp.route('/consultants/delete/<int:consultant_id>', methods=['POST'])
 @admin_required
+@admin_bp.route('/consultants/<int:consultant_id>/cv')
+@admin_required
+def download_cv(consultant_id):
+    consultant = User.query.get_or_404(consultant_id)
+    if not consultant.cv_filename:
+        abort(404)
+    return send_from_directory(
+        os.path.join(current_app.config['UPLOAD_FOLDER'], 'consultants'),
+        consultant.cv_filename
+    )
+
 def consultant_delete(consultant_id):
     consultant = User.query.get_or_404(consultant_id)
     

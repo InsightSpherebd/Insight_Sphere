@@ -34,6 +34,8 @@ class User(UserMixin, db.Model):
     bio = db.Column(db.Text)
     position = db.Column(db.String(100))
     photo_url = db.Column(db.String(255))
+    photo_filename = db.Column(db.String(255))
+    cv_filename = db.Column(db.String(255))
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
