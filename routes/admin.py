@@ -817,7 +817,7 @@ def file_edit():
         flash('Invalid path specified.', 'danger')
         return redirect(url_for('admin.file_manager'))
 
-    if request.method == 'POST:
+    if request.method == 'POST':
         content = request.form.get('content', '')
 
         try:
