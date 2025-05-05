@@ -34,8 +34,20 @@ class User(UserMixin, db.Model):
     bio = db.Column(db.Text)
     position = db.Column(db.String(100))
     photo_url = db.Column(db.String(255))
-    photo_filename = db.Column(db.String(255))
-    cv_filename = db.Column(db.String(255))
+    photo_filename = db.Column(db.String(255), nullable=True)
+    cv_filename = db.Column(db.String(255), nullable=True)
+    
+    @property
+    def photo_path(self):
+        if self.photo_filename:
+            return url_for('static', filename=f'uploads/consultants/{self.photo_filename}')
+        return self.photo_url or url_for('static', filename='img/default-avatar.png')
+        
+    @property
+    def cv_path(self):
+        if self.cv_filename:
+            return url_for('static', filename=f'uploads/consultants/{self.cv_filename}')
+        return None
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
