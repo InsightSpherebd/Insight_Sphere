@@ -14,12 +14,12 @@ class Config:
     }
 
     # Mail settings
-    MAIL_SERVER = os.environ.get('MAIL_SERVER')
-    MAIL_PORT = int(os.environ.get('MAIL_PORT', 587))
-    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() == 'true'
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')
+    MAIL_SERVER = 'smtp.gmail.com'  # Or your SMTP server
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = 'your-email@gmail.com'  # Your email
+    MAIL_PASSWORD = 'your-app-password'  # Your email password/app password
+    MAIL_DEFAULT_SENDER = 'Insight Sphere BD <your-email@gmail.com>'
 
     # File uploads
     UPLOAD_FOLDER = 'static/uploads'
@@ -30,9 +30,9 @@ class Config:
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
 
     # SSLCommerz settings
-    SSLCOMMERZ_STORE_ID = os.environ.get('SSLCOMMERZ_STORE_ID')
-    SSLCOMMERZ_STORE_PASSWORD = os.environ.get('SSLCOMMERZ_STORE_PASSWORD')
-    SSLCOMMERZ_SANDBOX = True  # Set to False in production
+    SSLCOMMERZ_STORE_ID = 'your-store-id'  # Your SSLCommerz Store ID
+    SSLCOMMERZ_STORE_PASSWORD = 'your-store-password'  # Your SSLCommerz Password
+    SSLCOMMERZ_SANDBOX = False  # Set to False for production
 
     # Website settings
     SITE_NAME = 'Insight Sphere BD'

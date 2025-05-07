@@ -100,7 +100,7 @@
                 template: {
                     name: '{{ template.name if template else "New Certificate Template" }}',
                     background_url: '{{ template.background_url if template else "" }}',
-                    html_template: `{{ template.html_template if template else ''|default(default_template, true) }}`
+                    html_template: `{{ template.html_template if template else default_template|default('') }}`
                 },
                 previewMode: false,
                 
