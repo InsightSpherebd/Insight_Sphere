@@ -51,11 +51,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for user, reg in participants %}
+                        {% for user, registration in participants %}
                             <tr>
                                 <td>{{ user.full_name }}</td>
                                 <td>{{ user.email }}</td>
-                                <td>{{ reg.registration_date.strftime('%d %b, %Y') if reg.registration_date else 'N/A' }}</td>
+                                <td>{{ registration.registration_date.strftime('%d %b, %Y') if registration.registration_date else 'N/A' }}</td>
                                 <td>
                                     <span class="badge {{ 'bg-success' if reg.payment_status == 'completed' else 'bg-warning' }}">
                                         {{ reg.payment_status }}
