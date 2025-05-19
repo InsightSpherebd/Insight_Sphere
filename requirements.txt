@@ -11,3 +11,4 @@ stripe>=12.1.0
 weasyprint>=65.1
 flask-migrate
 flask-wtf
+gunicorn
