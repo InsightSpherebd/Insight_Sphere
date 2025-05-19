@@ -104,7 +104,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for user, course, reg in recent_registrations %}
+                                {% for user, course in recent_registrations %}
                                     <tr>
                                         <td>{{ user.full_name }} ({{ user.email }})</td>
                                         <td>{{ reg.course.title }}</td>
