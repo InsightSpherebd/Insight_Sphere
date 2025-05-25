@@ -16,10 +16,18 @@ def login():
         
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user is None or not user.check_password(form.password.data):
+        try:
+            user = User.query.filter_by(email=form.email.data).first()
+            if user and user.check_password(form.password.data):
+                login_user(user, remember=form.remember_me.data)
+                next_page = request.args.get('next')
+                if not next_page or urlparse(next_page).netloc != '':
+                    next_page = url_for('user.dashboard')
+                return redirect(next_page)
             flash('Invalid email or password', 'danger')
-            return redirect(url_for('auth.login'))
+        except Exception as e:
+            flash('An error occurred during login. Please try again.', 'danger')
+            app.logger.error(f'Login error: {str(e)}')
             
         login_user(user, remember=form.remember_me.data)
         

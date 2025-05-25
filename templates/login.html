@@ -15,7 +15,7 @@
                             <p class="mb-4">Sign in to access your courses and certificates.</p>
                         {% endif %}
                         
-                        <form method="post" action="" novalidate>
+                        <form method="post" action="{{ url_for('auth.login') }}" novalidate>
                             {{ form.hidden_tag() }}
                             
                             <div class="form-group">
