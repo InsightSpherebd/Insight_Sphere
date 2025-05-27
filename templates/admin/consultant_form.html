@@ -70,17 +70,6 @@
         </div>
 
         <div class="form-group">
-            {{ form.photo_url.label(class="form-label") }}
-            {{ form.photo_url(class="form-control") }}
-            <small class="form-text text-muted">Or provide a direct URL to a photo</small>
-            {% if form.photo_url.errors %}
-                {% for error in form.photo_url.errors %}
-                <span class="form-text text-danger">{{ error }}</span>
-                {% endfor %}
-            {% endif %}
-        </div>
-
-        <div class="form-group">
             {{ form.photo.label(class="form-label") }}
             {{ form.photo(class="form-control") }}
             <small class="form-text text-muted">Upload profile photo (JPG, PNG formats accepted)</small>

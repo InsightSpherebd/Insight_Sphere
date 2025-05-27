@@ -556,8 +556,6 @@ def consultant_add():
             consultant.email = form.email.data
             consultant.bio = form.bio.data
             consultant.position = form.position.data
-            if form.photo_url.data:
-                consultant.photo_url = form.photo_url.data
 
             # Handle file uploads
             if form.photo.data and hasattr(form.photo.data, 'filename') and form.photo.data.filename:
@@ -632,9 +630,6 @@ def consultant_edit(consultant_id):
             consultant.bio = form.bio.data
             consultant.position = form.position.data
             consultant.is_consultant = True
-            
-            if form.photo_url.data:
-                consultant.photo_url = form.photo_url.data
 
             if form.photo.data and hasattr(form.photo.data, 'filename') and form.photo.data.filename:
                 try:

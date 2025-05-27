@@ -100,7 +100,6 @@ class ConsultantForm(FlaskForm):
     password = PasswordField('Password', validators=[Optional(), Length(min=6)])
     bio = TextAreaField('Biography', validators=[DataRequired()])
     position = StringField('Position/Title', validators=[DataRequired(), Length(max=100)])
-    photo_url = URLField('Photo URL', validators=[Optional(), URL()])
     photo = FileField('Profile Photo', validators=[Optional(), FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
     cv = FileField('CV/Resume (PDF)', validators=[Optional(), FileAllowed(['pdf'], 'PDF files only!')])
     submit = SubmitField('Save Consultant')
