@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, abort, jsonify, send_from_directory
+from flask import Blueprint, render_template, redirect, url_for, request, flash, abort, jsonify, send_from_directory, current_app
 from flask_login import login_required, current_user
 from sqlalchemy import desc
 from app import db
@@ -508,13 +508,13 @@ def consultant_manager():
 def consultant_add():
     form = ConsultantForm()
 
-    # Populate user_id choices with existing admins
-    admins = User.query.filter(User.role.in_(['admin', 'super_admin'])).all()
-    form.user_id.choices = [(0, 'Create New User')] + [(u.id, f"{u.full_name} ({u.email})") for u in admins]
+    # Populate user_id choices with existing users
+    existing_users = User.query.filter(User.role.in_(['admin', 'super_admin', 'user'])).all()
+    form.user_id.choices = [(0, 'Create New User')] + [(u.id, f"{u.full_name} ({u.email})") for u in existing_users]
 
     if form.validate_on_submit():
         try:
-            if form.user_id.data > 0:
+            if form.user_id.data and form.user_id.data > 0:
                 # Use existing user
                 consultant = User.query.get(form.user_id.data)
                 if not consultant:
@@ -528,15 +528,26 @@ def consultant_add():
                 if existing_user:
                     flash('A user with this email already exists.', 'danger')
                     return render_template('admin/consultant_form.html', title='Add Consultant', form=form)
+                
+                # Generate unique username
+                base_username = form.email.data.split('@')[0]
+                username = base_username
+                counter = 1
+                while User.query.filter_by(username=username).first():
+                    username = f"{base_username}{counter}"
+                    counter += 1
                     
                 consultant = User(
-                    username=form.email.data.split('@')[0],
+                    username=username,
                     email=form.email.data,
                     full_name=form.full_name.data,
                     is_consultant=True,
                     role='consultant'
                 )
-                consultant.set_password(form.password.data)
+                if form.password.data:
+                    consultant.set_password(form.password.data)
+                else:
+                    consultant.set_password('defaultpass123')  # Set a default password
                 db.session.add(consultant)
                 db.session.flush()  # Get the ID for file uploads
 
@@ -545,10 +556,11 @@ def consultant_add():
             consultant.email = form.email.data
             consultant.bio = form.bio.data
             consultant.position = form.position.data
-            consultant.photo_url = form.photo_url.data
+            if form.photo_url.data:
+                consultant.photo_url = form.photo_url.data
 
             # Handle file uploads
-            if form.photo.data:
+            if form.photo.data and hasattr(form.photo.data, 'filename') and form.photo.data.filename:
                 try:
                     # Create upload directory
                     upload_dir = os.path.join('static', 'uploads', 'consultants')
@@ -556,14 +568,15 @@ def consultant_add():
                     
                     # Save photo file
                     photo_file = form.photo.data
-                    photo_filename = secure_filename(f"{consultant.id}_photo_{int(time.time())}{os.path.splitext(photo_file.filename)[1]}")
+                    file_ext = os.path.splitext(photo_file.filename)[1]
+                    photo_filename = secure_filename(f"{consultant.id}_photo_{int(time.time())}{file_ext}")
                     photo_path = os.path.join(upload_dir, photo_filename)
                     photo_file.save(photo_path)
                     consultant.photo_filename = photo_filename
                 except Exception as e:
                     flash(f'Error uploading photo: {str(e)}', 'warning')
 
-            if form.cv.data:
+            if form.cv.data and hasattr(form.cv.data, 'filename') and form.cv.data.filename:
                 try:
                     # Create upload directory
                     upload_dir = os.path.join('static', 'uploads', 'consultants')
@@ -585,6 +598,13 @@ def consultant_add():
         except Exception as e:
             db.session.rollback()
             flash(f'Error adding consultant: {str(e)}', 'danger')
+    
+    else:
+        # Form validation failed
+        if form.errors:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'{field}: {error}', 'danger')
 
     return render_template('admin/consultant_form.html',
                          title='Add Consultant',
@@ -606,27 +626,56 @@ def consultant_edit(consultant_id):
     form.password.validators = []
 
     if form.validate_on_submit():
-        consultant.full_name = form.full_name.data
-        consultant.email = form.email.data
-        consultant.bio = form.bio.data
-        consultant.position = form.position.data
-        consultant.is_consultant = True
+        try:
+            consultant.full_name = form.full_name.data
+            consultant.email = form.email.data
+            consultant.bio = form.bio.data
+            consultant.position = form.position.data
+            consultant.is_consultant = True
+            
+            if form.photo_url.data:
+                consultant.photo_url = form.photo_url.data
 
-        if form.photo.data:
-            photo_file = form.photo.data
-            photo_filename = secure_filename(f"{consultant.id}_photo_{int(time.time())}{os.path.splitext(photo_file.filename)[1]}")
-            photo_file.save(os.path.join('static/uploads/consultants', photo_filename))
-            consultant.photo_filename = photo_filename
+            if form.photo.data and hasattr(form.photo.data, 'filename') and form.photo.data.filename:
+                try:
+                    upload_dir = os.path.join('static', 'uploads', 'consultants')
+                    os.makedirs(upload_dir, exist_ok=True)
+                    
+                    photo_file = form.photo.data
+                    file_ext = os.path.splitext(photo_file.filename)[1]
+                    photo_filename = secure_filename(f"{consultant.id}_photo_{int(time.time())}{file_ext}")
+                    photo_path = os.path.join(upload_dir, photo_filename)
+                    photo_file.save(photo_path)
+                    consultant.photo_filename = photo_filename
+                except Exception as e:
+                    flash(f'Error uploading photo: {str(e)}', 'warning')
 
-        if form.cv.data:
-            cv_file = form.cv.data
-            cv_filename = secure_filename(f"{consultant.id}_cv_{int(time.time())}.pdf")
-            cv_file.save(os.path.join('static/uploads/consultants', cv_filename))
-            consultant.cv_filename = cv_filename
+            if form.cv.data and hasattr(form.cv.data, 'filename') and form.cv.data.filename:
+                try:
+                    upload_dir = os.path.join('static', 'uploads', 'consultants')
+                    os.makedirs(upload_dir, exist_ok=True)
+                    
+                    cv_file = form.cv.data
+                    cv_filename = secure_filename(f"{consultant.id}_cv_{int(time.time())}.pdf")
+                    cv_path = os.path.join(upload_dir, cv_filename)
+                    cv_file.save(cv_path)
+                    consultant.cv_filename = cv_filename
+                except Exception as e:
+                    flash(f'Error uploading CV: {str(e)}', 'warning')
 
-        db.session.commit()
-        flash('Consultant updated successfully', 'success')
-        return redirect(url_for('admin.consultant_manager'))
+            db.session.commit()
+            flash('Consultant updated successfully!', 'success')
+            return redirect(url_for('admin.consultant_manager'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating consultant: {str(e)}', 'danger')
+    else:
+        # Form validation failed
+        if form.errors:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'{field}: {error}', 'danger')
 
     return render_template('admin/consultant_form.html',
                          title='Edit Consultant',
@@ -653,18 +702,9 @@ def download_cv(consultant_id):
     if not consultant.cv_filename:
         abort(404)
     return send_from_directory(
-        os.path.join(current_app.config['UPLOAD_FOLDER'], 'consultants'),
+        os.path.join('static', 'uploads', 'consultants'),
         consultant.cv_filename
     )
-    consultant = User.query.get_or_404(consultant_id)
-
-    if not consultant.is_consultant:
-        abort(404)
-
-    consultant.is_consultant = False
-    db.session.commit()
-    flash('Consultant removed successfully!', 'success')
-    return redirect(url_for('admin.consultant_manager'))
 
 # Certificate Builder
 @admin_bp.route('/certificates/templates')

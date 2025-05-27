@@ -94,7 +94,7 @@ class SiteContentForm(FlaskForm):
     submit = SubmitField('Save Content')
 
 class ConsultantForm(FlaskForm):
-    user_id = SelectField('User', coerce=int)
+    user_id = SelectField('User', coerce=int, default=0)
     full_name = StringField('Full Name', validators=[DataRequired(), Length(max=100)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[Optional(), Length(min=6)])
@@ -106,8 +106,8 @@ class ConsultantForm(FlaskForm):
     submit = SubmitField('Save Consultant')
     
     def validate_password(self, field):
-        # Only require password if creating new user (user_id == 0)
-        if self.user_id.data == 0 and not field.data:
+        # Only require password if creating new user (user_id == 0 or None)
+        if (not self.user_id.data or self.user_id.data == 0) and not field.data:
             raise ValidationError('Password is required when creating a new user.')
 
 class CertificateTemplateForm(FlaskForm):
