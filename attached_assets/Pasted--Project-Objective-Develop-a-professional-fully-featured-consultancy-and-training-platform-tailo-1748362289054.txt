@@ -1,0 +1,98 @@
+🎯 Project Objective
+Develop a professional, fully-featured consultancy and training platform tailored to industrial engineering. This system will be hosted on Replit and include:
+•	A branded, responsive landing site for users to explore courses, consulting services, consultant profiles, and company info
+•	A full-featured Content Management System for admins to dynamically edit all text, layouts, consultant profiles, and downloadable content
+•	Role-based admin tools to manage services, consultants, media, payments, and participants
+•	Registration and payment workflow via SSLCommerz 
+•	Video content delivery for training via file upload or embedded YouTube
+•	Auto-generated certificates, verification system, and consultant booking
+🌐 Frontend (Public User-Facing Features)
+🏠 Landing Page
+•	Dynamic banner with featured courses and services
+•	Intro to Insight Sphere BD
+•	Navigation: About Us | Services | Consultants | Courses | Contact | Login
+📄 About Us
+•	Editable sections: Mission & Vision, Projects, Company Overview
+🛠️ Services Page
+•	List of industrial consulting services: Lean implementation, layout planning, productivity audits, etc.
+•	Users can submit "Request a Quote" form with optional file upload
+👤 Consultants Portfolio Page
+•	Public-facing consultant profiles, each like a mini-portfolio
+•	Displays:
+o	Name, title, photo, bio, contact info, areas of expertise
+o	Social media or LinkedIn links (optional)
+o	Courses/events associated with the consultant
+o	Downloadable CV (PDF added/uploaded by Admin)
+•	Admins can manage consultant data from the Content Management System
+•	Optional filter/search by domain expertise or name
+📚 Courses & Events
+•	Dynamic listing with media, dates, pricing, and registration buttons
+•	Media can be embedded YouTube/Vimeo or uploaded video previews
+📝 Registration & Payment
+•	Registration form tied to courses or events
+•	Auto-registration ID and "Proceed to Payment" flow
+•	Payment via SSLCommerz
+•	Confirmation and receipt emailed
+•	Data saved and downloadable by admin
+🔐 User Dashboard
+•	View registered events
+•	Access course/session materials (videos, slides, links)
+•	Download certificates
+•	View/print payment receipts and registration history
+🧾 Certificates
+•	Generated upon admin marking "Complete"
+•	Customizable templates with drag-and-drop builder
+•	PDF emailed to user
+•	Public certificate verification via unique code or QR
+🧠 Knowledge Hub / Blog
+•	Admin-managed industrial engineering insights
+•	Articles categorized (Lean, Facility Design, Supply Chain)
+•	SEO-friendly design for organic traffic
+💬 Support Tools
+•	Contact form with attachment support
+•	Optional live chat via Crisp/Tawk.to
+🧑💼 Admin Panel
+🔐 Admin Authentication
+•	Roles: Super Admin, Admin, Consultant (optional content-only access)
+📄 Content Management System – Site Content Control
+•	Global layout and text updates
+•	Mission, services, projects, footer, colors
+•	Menu link editing
+🎓 Course/Event Manager
+•	Full CRUD (create/read/update/delete) on course data
+•	Set: Title, Fee, Capacity, Dates, Video or session links
+•	Upload resources for enrolled users
+📊 Analytics
+•	Metrics on registrations, payments, completion
+•	Download CSV or chart summaries
+👥 Participants
+•	View & filter by event
+•	Mark users as "Completed"
+•	Certificate issuing toggle
+•	Export lists to CSV
+📬 Email Notifications
+•	Auto-send for: Confirmation, Receipt, Certificate
+•	Email template customization
+🧾 Certificate Builder
+•	Upload template background
+•	Drag-and-drop field placement: name, course, date, QR
+•	Preview & auto-generate per participant
+👤 Consultant Portfolio Manager
+•	Admins can:
+o	Add/edit consultant bios, expertise, photo
+o	Upload a downloadable PDF CV
+o	Assign courses/events they lead
+•	Consultant cards displayed publicly
+•	Users can search, browse, and download consultant CVs
+📅 Consultant Booking (Optional)
+•	Admins can enable booking per consultant
+•	Time slots or Calendly-style integration
+•	User submits request with optional message and file
+•	Notifications sent to both parties
+📂 Invoicing / Billing
+•	Create/send invoices for custom consulting packages
+•	Itemized with VAT/Tax IDs
+•	Status: Paid, Unpaid, Pending
+✅ Certificate Verification Page
+•	Users can enter certificate ID to verify authenticity
+•	Shows: Name, Course, Date
