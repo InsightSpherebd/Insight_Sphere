@@ -2,20 +2,74 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero">
+<section class="hero-section">
     <div class="container">
-        {% if hero_content %}
-            {% for item in hero_content %}
-                <h2>{{ item.title }}</h2>
-                <p>{{ item.content }}</p>
-            {% endfor %}
-        {% else %}
-            <h2>Welcome to Insight Sphere BD</h2>
-            <p>Your premier destination for industrial engineering consultancy, training, and professional development.</p>
-        {% endif %}
-        <div class="hero-buttons">
-            <a href="{{ url_for('public.courses') }}" class="btn btn-primary">Browse Courses</a>
-            <a href="{{ url_for('public.about') }}" class="btn btn-secondary">About Us</a>
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                {% if hero_content %}
+                    {% for content in hero_content %}
+                        <h1 class="display-4 fw-bold mb-4">{{ content.title or 'Welcome to Insight Sphere BD' }}</h1>
+                        <p class="lead mb-4">{{ content.content or 'Your premier destination for industrial engineering training and professional development in Bangladesh.' }}</p>
+                    {% endfor %}
+                {% else %}
+                    <h1 class="display-4 fw-bold mb-4">Welcome to Insight Sphere BD</h1>
+                    <p class="lead mb-4">Your premier destination for industrial engineering training and professional development in Bangladesh.</p>
+                {% endif %}
+                <div class="hero-buttons">
+                    <a href="{{ url_for('public.courses') }}" class="btn btn-primary btn-lg me-3">Explore Courses</a>
+                    <a href="{{ url_for('public.services') }}" class="btn btn-outline-primary btn-lg me-3">Our Services</a>
+                    <a href="{{ url_for('public.about') }}" class="btn btn-outline-secondary btn-lg">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image">
+                    <img src="{{ url_for('static', filename='img/hero-illustration.svg') }}" alt="Industrial Engineering" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Overview -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Services</h2>
+            <p>Comprehensive industrial engineering solutions for your business</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-preview">
+                    <div class="service-icon">
+                        <i class="fas fa-cogs fa-3x text-primary"></i>
+                    </div>
+                    <h4>Lean Manufacturing</h4>
+                    <p>Eliminate waste and optimize your operations with proven lean methodologies.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-preview">
+                    <div class="service-icon">
+                        <i class="fas fa-drafting-compass fa-3x text-primary"></i>
+                    </div>
+                    <h4>Facility Design</h4>
+                    <p>Optimize your workspace layout for maximum productivity and efficiency.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-preview">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line fa-3x text-primary"></i>
+                    </div>
+                    <h4>Process Optimization</h4>
+                    <p>Improve your operational processes through comprehensive analysis and design.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{{ url_for('public.services') }}" class="btn btn-primary btn-lg">View All Services</a>
         </div>
     </div>
 </section>
@@ -25,9 +79,9 @@
     <div class="container">
         <div class="section-title">
             <h2>Featured Courses</h2>
-            <p>Expand your knowledge and skills with our specially curated courses</p>
+            <p>Discover our most popular training programs</p>
         </div>
-        
+
         <div class="course-grid">
             {% if featured_courses %}
                 {% for course in featured_courses %}
@@ -67,7 +121,7 @@
                 </div>
             {% endif %}
         </div>
-        
+
         <div class="text-center mt-4">
             <a href="{{ url_for('public.courses') }}" class="btn btn-primary">View All Courses</a>
         </div>
@@ -81,7 +135,7 @@
             <h2>Why Choose Insight Sphere BD</h2>
             <p>We're dedicated to excellence in industrial engineering education</p>
         </div>
-        
+
         <div class="row features">
             <div class="col-md-4 mb-4">
                 <div class="feature-card">
@@ -92,7 +146,7 @@
                     <p>Learn from industry professionals with years of experience</p>
                 </div>
             </div>
-            
+
             <div class="col-md-4 mb-4">
                 <div class="feature-card">
                     <div class="feature-icon">
@@ -102,7 +156,7 @@
                     <p>Courses designed to provide practical, industry-relevant skills</p>
                 </div>
             </div>
-            
+
             <div class="col-md-4 mb-4">
                 <div class="feature-card">
                     <div class="feature-icon">

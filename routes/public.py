@@ -35,6 +35,65 @@ def about():
                          about_content=about_content,
                          consultants=consultants)
 
+@public_bp.route('/services', methods=['GET', 'POST'])
+def services():
+    if request.method == 'POST':
+        # Handle quote request form submission
+        try:
+            # Get form data
+            full_name = request.form.get('full_name')
+            email = request.form.get('email')
+            phone = request.form.get('phone')
+            company = request.form.get('company', '')
+            service_type = request.form.get('service_type')
+            message = request.form.get('message')
+            
+            # Handle file upload
+            attachment = request.files.get('attachment')
+            attachment_filename = None
+            if attachment and attachment.filename:
+                # Create upload directory
+                import os
+                upload_dir = os.path.join('static', 'uploads', 'quotes')
+                os.makedirs(upload_dir, exist_ok=True)
+                
+                # Save file with secure filename
+                from werkzeug.utils import secure_filename
+                import time
+                filename = secure_filename(f"quote_{int(time.time())}_{attachment.filename}")
+                attachment_path = os.path.join(upload_dir, filename)
+                attachment.save(attachment_path)
+                attachment_filename = filename
+            
+            # Save quote request to database (you might want to create a QuoteRequest model)
+            # For now, we'll send an email notification
+            from utils.email_service import EmailService
+            EmailService.send_quote_request(
+                full_name, email, phone, company, service_type, message, attachment_filename
+            )
+            
+            flash('Thank you for your quote request! We will get back to you within 24 hours.', 'success')
+            return redirect(url_for('public.services'))
+            
+        except Exception as e:
+            current_app.logger.error(f"Error processing quote request: {str(e)}")
+            flash('There was an error submitting your request. Please try again.', 'danger')
+    
+    return render_template('services.html', title='Our Services')
+
+@public_bp.route('/consultants')
+def consultants():
+    # Get all consultants
+    consultants = User.query.filter_by(is_consultant=True).all()
+    
+    # Get all courses for consultant association
+    courses = Course.query.filter_by(is_published=True).all()
+    
+    return render_template('consultants.html', 
+                         title='Our Consultants',
+                         consultants=consultants,
+                         courses=courses)
+
 @public_bp.route('/courses')
 def courses():
     # Get all published courses

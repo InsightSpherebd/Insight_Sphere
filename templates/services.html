@@ -1,0 +1,233 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Services Hero Section -->
+<section class="hero-section bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">Industrial Consulting Services</h1>
+                <p class="lead mb-4">Transform your operations with our expert consulting services. We specialize in lean implementation, facility design, and process optimization to drive efficiency and growth.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Grid -->
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="service-card h-100">
+                    <div class="service-icon">
+                        <i class="fas fa-cogs fa-3x text-primary"></i>
+                    </div>
+                    <h4>Lean Manufacturing Implementation</h4>
+                    <p>Eliminate waste, reduce costs, and improve efficiency through proven lean methodologies tailored to your specific industry needs.</p>
+                    <ul class="service-features">
+                        <li>Value Stream Mapping</li>
+                        <li>5S Implementation</li>
+                        <li>Kaizen Events</li>
+                        <li>Continuous Improvement Training</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="service-card h-100">
+                    <div class="service-icon">
+                        <i class="fas fa-drafting-compass fa-3x text-primary"></i>
+                    </div>
+                    <h4>Facility Layout Planning</h4>
+                    <p>Optimize your workspace design for maximum productivity, safety, and operational flow using advanced layout planning techniques.</p>
+                    <ul class="service-features">
+                        <li>Space Utilization Analysis</li>
+                        <li>Workflow Optimization</li>
+                        <li>Material Flow Design</li>
+                        <li>Safety Compliance</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="service-card h-100">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line fa-3x text-primary"></i>
+                    </div>
+                    <h4>Productivity Audits</h4>
+                    <p>Comprehensive assessment of your current operations to identify bottlenecks and opportunities for improvement.</p>
+                    <ul class="service-features">
+                        <li>Process Analysis</li>
+                        <li>Time & Motion Studies</li>
+                        <li>Performance Metrics</li>
+                        <li>Improvement Recommendations</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="service-card h-100">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt fa-3x text-primary"></i>
+                    </div>
+                    <h4>Quality Management Systems</h4>
+                    <p>Implement robust quality systems to ensure consistent product quality and customer satisfaction.</p>
+                    <ul class="service-features">
+                        <li>ISO 9001 Implementation</li>
+                        <li>Quality Control Procedures</li>
+                        <li>Statistical Process Control</li>
+                        <li>Supplier Quality Management</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="service-card h-100">
+                    <div class="service-icon">
+                        <i class="fas fa-truck fa-3x text-primary"></i>
+                    </div>
+                    <h4>Supply Chain Optimization</h4>
+                    <p>Streamline your supply chain operations to reduce costs, improve delivery times, and enhance customer service.</p>
+                    <ul class="service-features">
+                        <li>Inventory Management</li>
+                        <li>Vendor Management</li>
+                        <li>Logistics Optimization</li>
+                        <li>Demand Forecasting</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="service-card h-100">
+                    <div class="service-icon">
+                        <i class="fas fa-users fa-3x text-primary"></i>
+                    </div>
+                    <h4>Training & Development</h4>
+                    <p>Build internal capabilities through comprehensive training programs designed for your team's specific needs.</p>
+                    <ul class="service-features">
+                        <li>Skills Assessment</li>
+                        <li>Custom Training Programs</li>
+                        <li>Leadership Development</li>
+                        <li>Certification Courses</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Request Quote Section -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h2>Request a Quote</h2>
+                    <p class="lead">Ready to transform your operations? Get in touch with our experts for a customized consultation.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <form id="quoteForm" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="full_name" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="full_name" name="full_name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="company" class="form-label">Company Name</label>
+                                    <input type="text" class="form-control" id="company" name="company">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="service_type" class="form-label">Service Required *</label>
+                                <select class="form-control" id="service_type" name="service_type" required>
+                                    <option value="">Select a service</option>
+                                    <option value="lean_manufacturing">Lean Manufacturing Implementation</option>
+                                    <option value="facility_layout">Facility Layout Planning</option>
+                                    <option value="productivity_audit">Productivity Audits</option>
+                                    <option value="quality_management">Quality Management Systems</option>
+                                    <option value="supply_chain">Supply Chain Optimization</option>
+                                    <option value="training">Training & Development</option>
+                                    <option value="other">Other (Please specify in message)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Project Details *</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" placeholder="Please describe your project requirements, timeline, and any specific challenges you're facing..." required></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="attachment" class="form-label">Attach Files (Optional)</label>
+                                <input type="file" class="form-control" id="attachment" name="attachment" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+                                <small class="form-text text-muted">You can attach relevant documents, drawings, or images. Max 10MB per file.</small>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.service-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.service-icon {
+    margin-bottom: 1.5rem;
+}
+
+.service-features {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.service-features li {
+    padding: 0.25rem 0;
+    color: #666;
+}
+
+.service-features li:before {
+    content: "✓";
+    color: #28a745;
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+</style>
+{% endblock %}
