@@ -8,6 +8,17 @@
         {{ form.csrf_token }}
 
         <div class="form-group">
+            {{ form.user_id.label(class="form-label") }}
+            {{ form.user_id(class="form-control") }}
+            <small class="form-text text-muted">Select an existing user or create a new one</small>
+            {% if form.user_id.errors %}
+                {% for error in form.user_id.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
             {{ form.full_name.label(class="form-label") }}
             {{ form.full_name(class="form-control") }}
             {% if form.full_name.errors %}
@@ -27,11 +38,43 @@
             {% endif %}
         </div>
 
+        <div class="form-group new-user-field" style="display: none;">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group new-user-field" style="display: none;">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control") }}
+            <small class="form-text text-muted">Required only when creating a new user</small>
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
         <div class="form-group">
             {{ form.bio.label(class="form-label") }}
-            {{ form.bio(class="form-control", rows="5") }}
+            {{ form.bio(class="form-control editor", rows="5") }}
             {% if form.bio.errors %}
                 {% for error in form.bio.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.photo_url.label(class="form-label") }}
+            {{ form.photo_url(class="form-control") }}
+            <small class="form-text text-muted">Or provide a direct URL to a photo</small>
+            {% if form.photo_url.errors %}
+                {% for error in form.photo_url.errors %}
                 <span class="form-text text-danger">{{ error }}</span>
                 {% endfor %}
             {% endif %}

@@ -508,45 +508,83 @@ def consultant_manager():
 def consultant_add():
     form = ConsultantForm()
 
-    def save_file(file, consultant_id, file_type):
-        if not file:
-            return None
-        filename = secure_filename(f"{consultant_id}_{file_type}_{file.filename}")
-        upload_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'consultants')
-        os.makedirs(upload_dir, exist_ok=True)
-        file_path = os.path.join(upload_dir, filename)
-        file.save(file_path)
-        return filename
-
     # Populate user_id choices with existing admins
     admins = User.query.filter(User.role.in_(['admin', 'super_admin'])).all()
     form.user_id.choices = [(0, 'Create New User')] + [(u.id, f"{u.full_name} ({u.email})") for u in admins]
 
     if form.validate_on_submit():
-        if form.user_id.data > 0:
-            # Use existing user
-            consultant = User.query.get(form.user_id.data)
-            consultant.is_consultant = True
-        else:
-            # Create new user
-            consultant = User(
-                username=form.email.data.split('@')[0],
-                email=form.email.data,
-                full_name=form.full_name.data,
-                is_consultant=True,
-                role='consultant'
-            )
-            consultant.set_password(form.password.data)
-            db.session.add(consultant)
+        try:
+            if form.user_id.data > 0:
+                # Use existing user
+                consultant = User.query.get(form.user_id.data)
+                if not consultant:
+                    flash('Selected user not found.', 'danger')
+                    return render_template('admin/consultant_form.html', title='Add Consultant', form=form)
+                consultant.is_consultant = True
+            else:
+                # Create new user
+                # Check if email already exists
+                existing_user = User.query.filter_by(email=form.email.data).first()
+                if existing_user:
+                    flash('A user with this email already exists.', 'danger')
+                    return render_template('admin/consultant_form.html', title='Add Consultant', form=form)
+                    
+                consultant = User(
+                    username=form.email.data.split('@')[0],
+                    email=form.email.data,
+                    full_name=form.full_name.data,
+                    is_consultant=True,
+                    role='consultant'
+                )
+                consultant.set_password(form.password.data)
+                db.session.add(consultant)
+                db.session.flush()  # Get the ID for file uploads
 
-        # Update consultant info
-        consultant.bio = form.bio.data
-        consultant.position = form.position.data
-        consultant.photo_url = form.photo_url.data
+            # Update consultant info
+            consultant.full_name = form.full_name.data
+            consultant.email = form.email.data
+            consultant.bio = form.bio.data
+            consultant.position = form.position.data
+            consultant.photo_url = form.photo_url.data
 
-        db.session.commit()
-        flash('Consultant added successfully!', 'success')
-        return redirect(url_for('admin.consultant_manager'))
+            # Handle file uploads
+            if form.photo.data:
+                try:
+                    # Create upload directory
+                    upload_dir = os.path.join('static', 'uploads', 'consultants')
+                    os.makedirs(upload_dir, exist_ok=True)
+                    
+                    # Save photo file
+                    photo_file = form.photo.data
+                    photo_filename = secure_filename(f"{consultant.id}_photo_{int(time.time())}{os.path.splitext(photo_file.filename)[1]}")
+                    photo_path = os.path.join(upload_dir, photo_filename)
+                    photo_file.save(photo_path)
+                    consultant.photo_filename = photo_filename
+                except Exception as e:
+                    flash(f'Error uploading photo: {str(e)}', 'warning')
+
+            if form.cv.data:
+                try:
+                    # Create upload directory
+                    upload_dir = os.path.join('static', 'uploads', 'consultants')
+                    os.makedirs(upload_dir, exist_ok=True)
+                    
+                    # Save CV file
+                    cv_file = form.cv.data
+                    cv_filename = secure_filename(f"{consultant.id}_cv_{int(time.time())}.pdf")
+                    cv_path = os.path.join(upload_dir, cv_filename)
+                    cv_file.save(cv_path)
+                    consultant.cv_filename = cv_filename
+                except Exception as e:
+                    flash(f'Error uploading CV: {str(e)}', 'warning')
+
+            db.session.commit()
+            flash('Consultant added successfully!', 'success')
+            return redirect(url_for('admin.consultant_manager'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error adding consultant: {str(e)}', 'danger')
 
     return render_template('admin/consultant_form.html',
                          title='Add Consultant',

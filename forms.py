@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import (StringField, PasswordField, BooleanField, SubmitField, 
                     TextAreaField, SelectField, IntegerField, FloatField, 
                     DateTimeField, HiddenField, FileField, URLField)
-from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, URL
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, URL, ValidationError
 from flask_wtf.file import FileAllowed
 from datetime import datetime
 
@@ -97,12 +97,18 @@ class ConsultantForm(FlaskForm):
     user_id = SelectField('User', coerce=int)
     full_name = StringField('Full Name', validators=[DataRequired(), Length(max=100)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[Length(min=6)])
+    password = PasswordField('Password', validators=[Optional(), Length(min=6)])
     bio = TextAreaField('Biography', validators=[DataRequired()])
     position = StringField('Position/Title', validators=[DataRequired(), Length(max=100)])
-    photo = FileField('Profile Photo', validators=[Optional(), FileAllowed(['jpg', 'png'], 'Images only!')])
+    photo_url = URLField('Photo URL', validators=[Optional(), URL()])
+    photo = FileField('Profile Photo', validators=[Optional(), FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
     cv = FileField('CV/Resume (PDF)', validators=[Optional(), FileAllowed(['pdf'], 'PDF files only!')])
     submit = SubmitField('Save Consultant')
+    
+    def validate_password(self, field):
+        # Only require password if creating new user (user_id == 0)
+        if self.user_id.data == 0 and not field.data:
+            raise ValidationError('Password is required when creating a new user.')
 
 class CertificateTemplateForm(FlaskForm):
     name = StringField('Template Name', validators=[DataRequired(), Length(max=100)])
