@@ -47,7 +47,7 @@ def dashboard():
     user_count = User.query.filter_by(role='user').count()
     payment_total = db.session.query(db.func.sum(Payment.amount)).filter_by(payment_status='completed').scalar() or 0
     recent_registrations = db.session.query(
-        User, Course
+        User, Course, registrations.c.registration_date, registrations.c.payment_status
     ).join(
         registrations, User.id == registrations.c.user_id
     ).join(

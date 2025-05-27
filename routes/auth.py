@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse
-from app import db
+from app import db, app
 from models import User
 from forms import LoginForm, RegistrationForm
 
@@ -20,25 +20,20 @@ def login():
             user = User.query.filter_by(email=form.email.data).first()
             if user and user.check_password(form.password.data):
                 login_user(user, remember=form.remember_me.data)
+                
                 next_page = request.args.get('next')
                 if not next_page or urlparse(next_page).netloc != '':
-                    next_page = url_for('user.dashboard')
+                    if user.is_admin():
+                        next_page = url_for('admin.dashboard')
+                    else:
+                        next_page = url_for('user.dashboard')
+                        
                 return redirect(next_page)
-            flash('Invalid email or password', 'danger')
+            else:
+                flash('Invalid email or password', 'danger')
         except Exception as e:
             flash('An error occurred during login. Please try again.', 'danger')
             app.logger.error(f'Login error: {str(e)}')
-            
-        login_user(user, remember=form.remember_me.data)
-        
-        next_page = request.args.get('next')
-        if not next_page or urlparse(next_page).netloc != '':
-            if user.is_admin():
-                next_page = url_for('admin.dashboard')
-            else:
-                next_page = url_for('user.dashboard')
-                
-        return redirect(next_page)
         
     return render_template('login.html', title='Sign In', form=form)
 
