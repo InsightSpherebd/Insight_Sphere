@@ -512,8 +512,15 @@ def consultant_add():
     existing_users = User.query.filter(User.role.in_(['admin', 'super_admin', 'user'])).all()
     form.user_id.choices = [(0, 'Create New User')] + [(u.id, f"{u.full_name} ({u.email})") for u in existing_users]
 
+    if request.method == 'POST':
+        print(f"Form data received: {request.form}")
+        print(f"Form validation result: {form.validate_on_submit()}")
+        print(f"Form errors: {form.errors}")
+        
     if form.validate_on_submit():
         try:
+            consultant = None
+            
             if form.user_id.data and form.user_id.data > 0:
                 # Use existing user
                 consultant = User.query.get(form.user_id.data)
@@ -522,7 +529,15 @@ def consultant_add():
                     return render_template('admin/consultant_form.html', title='Add Consultant', form=form)
                 consultant.is_consultant = True
             else:
-                # Create new user
+                # Create new user - validate required fields
+                if not form.email.data:
+                    flash('Email is required when creating a new user.', 'danger')
+                    return render_template('admin/consultant_form.html', title='Add Consultant', form=form)
+                    
+                if not form.password.data:
+                    flash('Password is required when creating a new user.', 'danger')
+                    return render_template('admin/consultant_form.html', title='Add Consultant', form=form)
+                
                 # Check if email already exists
                 existing_user = User.query.filter_by(email=form.email.data).first()
                 if existing_user:
@@ -540,22 +555,27 @@ def consultant_add():
                 consultant = User(
                     username=username,
                     email=form.email.data,
-                    full_name=form.full_name.data,
+                    full_name=form.full_name.data or 'Unknown',
                     is_consultant=True,
                     role='consultant'
                 )
-                if form.password.data:
-                    consultant.set_password(form.password.data)
-                else:
-                    consultant.set_password('defaultpass123')  # Set a default password
+                consultant.set_password(form.password.data)
                 db.session.add(consultant)
                 db.session.flush()  # Get the ID for file uploads
 
             # Update consultant info
-            consultant.full_name = form.full_name.data
-            consultant.email = form.email.data
-            consultant.bio = form.bio.data
-            consultant.position = form.position.data
+            if form.full_name.data:
+                consultant.full_name = form.full_name.data
+            if form.email.data and consultant.email != form.email.data:
+                # Check if new email already exists
+                existing_user = User.query.filter_by(email=form.email.data).filter(User.id != consultant.id).first()
+                if existing_user:
+                    flash('A user with this email already exists.', 'danger')
+                    return render_template('admin/consultant_form.html', title='Add Consultant', form=form)
+                consultant.email = form.email.data
+                
+            consultant.bio = form.bio.data or ''
+            consultant.position = form.position.data or ''
 
             # Handle file uploads
             if form.photo.data and hasattr(form.photo.data, 'filename') and form.photo.data.filename:
@@ -596,10 +616,11 @@ def consultant_add():
         except Exception as e:
             db.session.rollback()
             flash(f'Error adding consultant: {str(e)}', 'danger')
+            print(f"Exception occurred: {str(e)}")
     
     else:
         # Form validation failed
-        if form.errors:
+        if request.method == 'POST' and form.errors:
             for field, errors in form.errors.items():
                 for error in errors:
                     flash(f'{field}: {error}', 'danger')

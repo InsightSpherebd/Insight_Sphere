@@ -96,13 +96,18 @@ class SiteContentForm(FlaskForm):
 class ConsultantForm(FlaskForm):
     user_id = SelectField('User', coerce=int, default=0)
     full_name = StringField('Full Name', validators=[DataRequired(), Length(max=100)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = StringField('Email', validators=[Optional(), Email()])
     password = PasswordField('Password', validators=[Optional(), Length(min=6)])
-    bio = TextAreaField('Biography', validators=[DataRequired()])
-    position = StringField('Position/Title', validators=[DataRequired(), Length(max=100)])
+    bio = TextAreaField('Biography', validators=[Optional()])
+    position = StringField('Position/Title', validators=[Optional(), Length(max=100)])
     photo = FileField('Profile Photo', validators=[Optional(), FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
     cv = FileField('CV/Resume (PDF)', validators=[Optional(), FileAllowed(['pdf'], 'PDF files only!')])
     submit = SubmitField('Save Consultant')
+    
+    def validate_email(self, field):
+        # Only require email if creating new user (user_id == 0 or None)
+        if (not self.user_id.data or self.user_id.data == 0) and not field.data:
+            raise ValidationError('Email is required when creating a new user.')
     
     def validate_password(self, field):
         # Only require password if creating new user (user_id == 0 or None)
