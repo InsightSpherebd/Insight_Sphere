@@ -760,7 +760,8 @@ def certificate_template_add():
 
     return render_template('admin/certificate_template_form.html',
                          title='Add Certificate Template',
-                         form=form)
+                         form=form,
+                         user=current_user)
 
 @admin_bp.route('/certificates/templates/edit/<int:template_id>', methods=['GET', 'POST'])
 @admin_required
@@ -792,7 +793,8 @@ def certificate_template_edit(template_id):
     return render_template('admin/certificate_template_form.html',
                          title='Edit Certificate Template',
                          form=form,
-                         template=template)
+                         template=template,
+                         user=current_user)
 
 @admin_bp.route('/certificates/templates/delete/<int:template_id>', methods=['POST'])
 @admin_required
