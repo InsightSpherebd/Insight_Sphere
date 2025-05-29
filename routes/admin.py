@@ -512,6 +512,10 @@ def consultant_add():
     existing_users = User.query.filter(User.role.in_(['admin', 'super_admin', 'user'])).all()
     form.user_id.choices = [(0, 'Create New User')] + [(u.id, f"{u.full_name} ({u.email})") for u in existing_users]
 
+    # Populate course choices for assignment
+    courses = Course.query.filter_by(is_published=True).all()
+    form.assigned_courses.choices = [(0, 'No Course Assignment')] + [(c.id, c.title) for c in courses]
+
     if request.method == 'POST':
         print(f"Form data received: {request.form}")
         print(f"Form validation result: {form.validate_on_submit()}")
@@ -577,6 +581,12 @@ def consultant_add():
             consultant.bio = form.bio.data or ''
             consultant.position = form.position.data or ''
 
+            # Handle course assignment
+            if form.assigned_courses.data and form.assigned_courses.data > 0:
+                course = Course.query.get(form.assigned_courses.data)
+                if course:
+                    course.creator_id = consultant.id
+
             # Handle file uploads
             if form.photo.data and hasattr(form.photo.data, 'filename') and form.photo.data.filename:
                 try:
@@ -641,6 +651,15 @@ def consultant_edit(consultant_id):
     form.user_id.choices = [(consultant.id, f"{consultant.full_name} ({consultant.email})")]
     form.user_id.data = consultant.id
 
+    # Populate course choices for assignment
+    courses = Course.query.filter_by(is_published=True).all()
+    form.assigned_courses.choices = [(0, 'No Course Assignment')] + [(c.id, c.title) for c in courses]
+    
+    # Set current assigned course if any
+    assigned_course = Course.query.filter_by(creator_id=consultant.id).first()
+    if assigned_course:
+        form.assigned_courses.data = assigned_course.id
+
     # Don't require password for edit
     form.password.validators = []
 
@@ -651,6 +670,18 @@ def consultant_edit(consultant_id):
             consultant.bio = form.bio.data
             consultant.position = form.position.data
             consultant.is_consultant = True
+
+            # Handle course assignment
+            # First, remove current assignment
+            current_courses = Course.query.filter_by(creator_id=consultant.id).all()
+            for course in current_courses:
+                course.creator_id = None
+            
+            # Then assign new course if selected
+            if form.assigned_courses.data and form.assigned_courses.data > 0:
+                course = Course.query.get(form.assigned_courses.data)
+                if course:
+                    course.creator_id = consultant.id
 
             if form.photo.data and hasattr(form.photo.data, 'filename') and form.photo.data.filename:
                 try:
@@ -750,6 +781,25 @@ def certificate_template_add():
             CertificateTemplate.query.filter_by(is_default=True).update({'is_default': False})
 
         db.session.add(template)
+        db.session.flush()  # Get the ID for file uploads
+
+        # Handle background photo upload
+        if form.background_photo.data and hasattr(form.background_photo.data, 'filename') and form.background_photo.data.filename:
+            try:
+                # Create upload directory
+                upload_dir = os.path.join('static', 'uploads', 'certificates')
+                os.makedirs(upload_dir, exist_ok=True)
+                
+                # Save background photo file
+                photo_file = form.background_photo.data
+                file_ext = os.path.splitext(photo_file.filename)[1]
+                photo_filename = secure_filename(f"{template.id}_background_{int(time.time())}{file_ext}")
+                photo_path = os.path.join(upload_dir, photo_filename)
+                photo_file.save(photo_path)
+                template.background_photo_filename = photo_filename
+            except Exception as e:
+                flash(f'Error uploading background image: {str(e)}', 'warning')
+
         db.session.commit()
         flash('Certificate template added successfully!', 'success')
         return redirect(url_for('admin.certificate_templates'))
@@ -773,6 +823,23 @@ def certificate_template_edit(template_id):
         template.name = form.name.data
         template.background_url = form.background_url.data
         template.html_template = form.html_template.data
+
+        # Handle background photo upload
+        if form.background_photo.data and hasattr(form.background_photo.data, 'filename') and form.background_photo.data.filename:
+            try:
+                # Create upload directory
+                upload_dir = os.path.join('static', 'uploads', 'certificates')
+                os.makedirs(upload_dir, exist_ok=True)
+                
+                # Save background photo file
+                photo_file = form.background_photo.data
+                file_ext = os.path.splitext(photo_file.filename)[1]
+                photo_filename = secure_filename(f"{template.id}_background_{int(time.time())}{file_ext}")
+                photo_path = os.path.join(upload_dir, photo_filename)
+                photo_file.save(photo_path)
+                template.background_photo_filename = photo_filename
+            except Exception as e:
+                flash(f'Error uploading background image: {str(e)}', 'warning')
 
         # Handle default status
         if form.is_default.data and not template.is_default:

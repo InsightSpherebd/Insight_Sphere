@@ -186,8 +186,15 @@ class CertificateTemplate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     background_url = db.Column(db.String(255))
+    background_photo_filename = db.Column(db.String(255), nullable=True)
     html_template = db.Column(db.Text)
     is_default = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     creator = db.relationship('User')
+    
+    @property
+    def background_image_path(self):
+        if self.background_photo_filename:
+            return url_for('static', filename=f'uploads/certificates/{self.background_photo_filename}')
+        return self.background_url

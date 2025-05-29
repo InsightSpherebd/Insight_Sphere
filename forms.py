@@ -100,6 +100,7 @@ class ConsultantForm(FlaskForm):
     password = PasswordField('Password', validators=[Optional(), Length(min=6)])
     bio = TextAreaField('Biography', validators=[Optional()])
     position = StringField('Position/Title', validators=[Optional(), Length(max=100)])
+    assigned_courses = SelectField('Assign to Course (Optional)', coerce=int, validators=[Optional()])
     photo = FileField('Profile Photo', validators=[Optional(), FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
     cv = FileField('CV/Resume (PDF)', validators=[Optional(), FileAllowed(['pdf'], 'PDF files only!')])
     submit = SubmitField('Save Consultant')
@@ -117,6 +118,7 @@ class ConsultantForm(FlaskForm):
 class CertificateTemplateForm(FlaskForm):
     name = StringField('Template Name', validators=[DataRequired(), Length(max=100)])
     background_url = URLField('Background Image URL', validators=[Optional(), URL()])
+    background_photo = FileField('Upload Background Image', validators=[Optional(), FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
     html_template = TextAreaField('HTML Template')
     is_default = BooleanField('Set as Default Template?', default=False)
     submit = SubmitField('Save Template')

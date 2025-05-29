@@ -38,6 +38,17 @@
             {% endif %}
         </div>
 
+        <div class="form-group">
+            {{ form.assigned_courses.label(class="form-label") }}
+            {{ form.assigned_courses(class="form-control") }}
+            <small class="form-text text-muted">Assign this consultant to be the creator/instructor of a specific course</small>
+            {% if form.assigned_courses.errors %}
+                {% for error in form.assigned_courses.errors %}
+                <span class="form-text text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
         <div class="form-group new-user-field">
             {{ form.email.label(class="form-label") }}
             {{ form.email(class="form-control") }}
