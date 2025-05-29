@@ -8,6 +8,99 @@ from models import Certificate, User, Course
 
 class CertificateGenerator:
     @staticmethod
+    def get_default_template_html():
+        return """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Certificate</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            margin: 0;
+            padding: 40px;
+            background: #f9f9f9;
+        }
+        .certificate {
+            background: white;
+            border: 10px solid #2c5282;
+            padding: 60px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .certificate-title {
+            font-size: 48px;
+            color: #2c5282;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        .certificate-text {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #333;
+        }
+        .recipient-name {
+            font-size: 36px;
+            color: #2c5282;
+            font-weight: bold;
+            margin: 30px 0;
+            text-decoration: underline;
+        }
+        .course-name {
+            font-size: 28px;
+            color: #2c5282;
+            font-style: italic;
+            margin: 30px 0;
+        }
+        .certificate-footer {
+            margin-top: 50px;
+            font-size: 16px;
+            color: #666;
+        }
+        .certificate-number {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <div class="certificate-title">CERTIFICATE OF COMPLETION</div>
+        
+        <div class="certificate-text">This is to certify that</div>
+        
+        <div class="recipient-name">{{user.full_name}}</div>
+        
+        <div class="certificate-text">has successfully completed the course</div>
+        
+        <div class="course-name">{{course.title}}</div>
+        
+        <div class="certificate-text">on {{date}}</div>
+        
+        <div class="certificate-footer">
+            <p>Insight Sphere BD</p>
+            <p>Industrial Engineering Consultancy & Training</p>
+        </div>
+        
+        <div class="certificate-number">Certificate No: {{certificate.certificate_number}}</div>
+    </div>
+</body>
+</html>
+        """
+    
+    @staticmethod
+    def generate_certificate(user_id, course_id, template_id=None):
+        # Implementation for certificate generation
+        pass
+
+class CertificateGenerator:
+    @staticmethod
     def generate_certificate(user_id, course_id, template_id=None):
         """
         Generate a PDF certificate for a user who completed a course

@@ -100,7 +100,7 @@
                 template: {
                     name: '{{ template.name if template else "New Certificate Template" }}',
                     background_url: '{{ template.background_url if template else "" }}',
-                    html_template: `{{ template.html_template if template else default_template|default('') }}`
+                    html_template: `{{ template.html_template if template else '' }}`
                 },
                 previewMode: false,
                 
@@ -115,10 +115,10 @@
                             frameDoc.open();
                             // Replace sample variables in preview
                             let previewHtml = this.template.html_template
-                                .replace(/{{user.full_name}}/g, 'John Doe')
-                                .replace(/{{course.title}}/g, 'Industrial Engineering Fundamentals')
-                                .replace(/{{certificate.certificate_number}}/g, 'CERT-1234-5678')
-                                .replace(/{{date}}/g, new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}));
+                                .replace(/\{\{user\.full_name\}\}/g, 'John Doe')
+                                .replace(/\{\{course\.title\}\}/g, 'Industrial Engineering Fundamentals')
+                                .replace(/\{\{certificate\.certificate_number\}\}/g, 'CERT-1234-5678')
+                                .replace(/\{\{date\}\}/g, new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}));
                             
                             frameDoc.write(previewHtml);
                             frameDoc.close();
